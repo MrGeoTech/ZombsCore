@@ -1,7 +1,6 @@
 package com.github.mrgeotech.zombscore.customblocks;
 
 import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -21,6 +20,12 @@ public class CustomBlocks {
 
     public static void addLocations(Location... locations) {
         CustomBlocks.locations.addAll(Arrays.asList(locations));
+    }
+
+    public static void removeLocations(Location... locations) {
+        for (Location location : locations) {
+            CustomBlocks.locations.remove(location);
+        }
     }
 
 }
