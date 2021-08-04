@@ -10,21 +10,30 @@ import java.util.*;
  */
 public class CustomBlocks {
 
-    private List<CustomBlockHandler> customBlockHandlers;
-    private static List<Location> locations;
+    private static Map<Location, CustomBlockHandler> handlers;
 
     public CustomBlocks() {
-        customBlockHandlers = new ArrayList<>();
-        locations = new ArrayList<>();
+        handlers = new HashMap<>();
     }
-
-    public static void addLocations(Location... locations) {
-        CustomBlocks.locations.addAll(Arrays.asList(locations));
+    
+    public static CustomBlockHandler getHandler(Location l) {
+        return handlers.get(l);
     }
-
-    public static void removeLocations(Location... locations) {
-        for (Location location : locations) {
-            CustomBlocks.locations.remove(location);
+    
+    public static boolean closeHandler(Location l) {
+        CustomBlockHandler old = handlers.remove(l);
+        if (old == null) return false;
+        //TODO: close custom block handler
+        return true;
+    }
+    
+    //Throws an exception if the old handler hasn't been removed yet, as this probably means we forgot to close the CustomBlockHandler
+    public static void mapHandler(Location l, CustomBlockHandler handler) throws IllegalStateException {
+        if (handler == null) {
+            handlers.remove(l);
+        } else {
+            CustomBlockHandler old = handlers.put(l, handler);
+            if (old != null) throw new IllegalStateException("Old block handler not removed yet at " + l);
         }
     }
 
