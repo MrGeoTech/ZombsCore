@@ -52,8 +52,18 @@ public class Structure {
         blocks.put(location, material);
     }
 
+    public void deleteStructure() {
+        for (Location location : blocks.keySet()) {
+            location.getWorld().getBlockAt(location).setType(Material.AIR);
+        }
+    }
+
     public void damageStructure() {
         this.damage += 1;
+        if (damage > 8) {
+            deleteStructure();
+            return;
+        }
         Bukkit.getScheduler().runTaskAsynchronously(ZombsCore.getInstance(), new Runnable() {
             @Override
             public void run() {
