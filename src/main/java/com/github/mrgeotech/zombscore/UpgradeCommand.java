@@ -37,6 +37,7 @@ public class UpgradeCommand implements CommandExecutor, Listener {
         pickaxeUpgrades = new HashMap<>();
         swordUpgrades = new HashMap<>();
         plugin = Bukkit.getPluginManager().getPlugin("ZombsCore");
+        // Initializing all the items and their upgrades
         ItemStack item = new ItemStack(Material.WOODEN_AXE, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.DARK_GRAY + "Wooden Axe");
@@ -87,6 +88,7 @@ public class UpgradeCommand implements CommandExecutor, Listener {
         meta.setDisplayName(ChatColor.DARK_GRAY + "Wooden Pickaxe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "stone");
         item.setItemMeta(meta);
+        // Pickaxes
         pickaxeUpgrades.put("wood", item);
         item = new ItemStack(Material.STONE_PICKAXE, 1);
         meta = item.getItemMeta();
@@ -131,6 +133,7 @@ public class UpgradeCommand implements CommandExecutor, Listener {
         meta.setDisplayName(ChatColor.DARK_GRAY + "Wooden Sword");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "stone");
         item.setItemMeta(meta);
+        // Swords
         swordUpgrades.put("wood", item);
         item = new ItemStack(Material.STONE_SWORD, 1);
         meta = item.getItemMeta();
@@ -170,7 +173,7 @@ public class UpgradeCommand implements CommandExecutor, Listener {
         meta.addEnchant(Enchantment.DIG_SPEED, 7, true);
         item.setItemMeta(meta);
         swordUpgrades.put("shiny-diamond", item);
-        System.gc();
+        System.gc(); // Much needed garbage collection
     }
 
     @Override
@@ -178,13 +181,16 @@ public class UpgradeCommand implements CommandExecutor, Listener {
         if (!sender.hasPermission("player.upgrade")) return sendAndQuit(sender, "Sorry but you don't have permission to execute this command!");
         if (!(sender instanceof Player)) return sendAndQuit(sender, "Only players can execute this command!");
         Player player = (Player) sender;
+        // Creating the inventory for the player
         Inventory inventory = Bukkit.createInventory(null, 27, "Upgrades Menu");
+        // Adding items to the inventory
         ItemStack item = new ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1);
         ItemMeta meta = item.getItemMeta();
         List<String> lore = new ArrayList<>();
         meta.setDisplayName(ChatColor.RESET.toString());
         meta.setLore(lore);
         item.setItemMeta(meta);
+        // The background glass
         for (int i = 0; i < 27; i++) {
             inventory.setItem(i, item);
         }
@@ -219,11 +225,13 @@ public class UpgradeCommand implements CommandExecutor, Listener {
         meta.setLore(lore);
         item.setItemMeta(meta);
         inventory.setItem(16, item);
+        // Opens the inventory for the player
         player.openInventory(inventory);
         return true;
     }
 
     private boolean sendAndQuit(CommandSender sender, String text) {
+        // A way to make sending a message to a player and returning true easier
         sender.sendMessage(ChatColor.RED + text);
         return true;
     }
@@ -235,8 +243,10 @@ public class UpgradeCommand implements CommandExecutor, Listener {
             Player player = (Player) event.getWhoClicked();
             PlayerInventory inventory = player.getInventory();
             String next;
+            // The slots that have things that do stuff when clicked
             switch (event.getSlot()) {
                 case 10:
+                    // Upgrading the axe
                     next = inventory.getItem(1).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
                     if (!next.equalsIgnoreCase("none"))
                         inventory.setItem(1, axeUpgrades.get(next));
@@ -244,6 +254,7 @@ public class UpgradeCommand implements CommandExecutor, Listener {
                         player.sendMessage(ChatColor.RED + "You already have the best axe!");
                     player.closeInventory();
                 case 12:
+                    // Upgrading the pickaxe
                     next = inventory.getItem(2).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
                     if (!next.equalsIgnoreCase("none"))
                         inventory.setItem(2, pickaxeUpgrades.get(next));
@@ -251,6 +262,7 @@ public class UpgradeCommand implements CommandExecutor, Listener {
                         player.sendMessage(ChatColor.RED + "You already have the best pickaxe!");
                     player.closeInventory();
                 case 14:
+                    // Upgrading the sword
                     next = inventory.getItem(0).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
                     if (!next.equalsIgnoreCase("none"))
                         inventory.setItem(0, swordUpgrades.get(next));
@@ -258,12 +270,15 @@ public class UpgradeCommand implements CommandExecutor, Listener {
                         player.sendMessage(ChatColor.RED + "You already have the best sword!");
                     player.closeInventory();
                 case 16:
+                    // Upgrading/getting pets
                     player.closeInventory();
                     player.sendMessage("Coming soon");
             }
         } else if (event.getCurrentItem().getType().equals(Material.NETHER_STAR)) {
+            // If it is the nether star in the players' inventory
             ((Player) event.getWhoClicked()).performCommand("/upgrades");
         } else if (event.getCurrentItem().getType().equals(Material.SWEET_BERRIES)) {
+            // If it is the sweet berries in the players' inventory
             PlayerData.removeFood((Player) event.getWhoClicked());
         }
     }

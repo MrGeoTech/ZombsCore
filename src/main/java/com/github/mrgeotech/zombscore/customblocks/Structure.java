@@ -21,6 +21,7 @@ public class Structure {
         this.id = id;
         this.type = type;
         this.blocks = blocks;
+        // Setting the blocks to the material in the world
         for (Location location : blocks.keySet()) {
             location.getWorld().getBlockAt(location).setType(blocks.get(location));
         }
@@ -48,7 +49,7 @@ public class Structure {
         blocks.put(location, material);
     }
 
-    public void damageStructure() {
+    public void damageStructure() { // TODO: Make asynchronous
         for (Player player : Bukkit.getOnlinePlayers()) {
             for (Location location : blocks.keySet()) {
                 if (this.distanceFromEachOther(player.getLocation(), location) < 50)

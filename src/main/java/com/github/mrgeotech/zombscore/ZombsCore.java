@@ -28,14 +28,17 @@ public final class ZombsCore extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) Bukkit.getPluginManager().disablePlugin(this);
         Bukkit.getLogger().log(Level.INFO, ChatColor.translateAlternateColorCodes('&', "&8[&3ZombsCore&8] &fCreating items..."));
         upgradeCommand = new UpgradeCommand();
+
         Bukkit.getLogger().log(Level.INFO, ChatColor.translateAlternateColorCodes('&', "&8[&3ZombsCore&8] &fRegistering items..."));
+        // Registering commands
         this.getCommand("upgrades").setExecutor(upgradeCommand);
         this.getCommand("playerdata").setExecutor(new PlayerDataCommand());
+        // Registering events
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(upgradeCommand, this);
+
         PlayerData.init();
         Bukkit.getLogger().log(Level.INFO, ChatColor.translateAlternateColorCodes('&', "&8[&3ZombsCore&8] &aComplete!"));
     }
@@ -60,8 +63,10 @@ public final class ZombsCore extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        // Adding player to player data
         if (!PlayerData.containsPlayer(player)) PlayerData.addPlayer(player);
         player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 2));
+        // Setting up player inventory
         player.getInventory().clear();
         player.getInventory().setItem(0, upgradeCommand.getSwordUpgrades().get("wood"));
         player.getInventory().setItem(1, upgradeCommand.getAxeUpgrades().get("wood"));
@@ -89,6 +94,7 @@ public final class ZombsCore extends JavaPlugin implements Listener {
             event.setCancelled(true);
             return;
         }
+        // TODO: Add in custom blocks
     }
 
     @EventHandler
@@ -108,13 +114,14 @@ public final class ZombsCore extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        // Creates a thread that will wait 5 mins and then deleted the player data
         Bukkit.getScheduler().runTaskAsynchronously(this, new PlayerQuitEventHandler().setPlayer(event.getPlayer()));
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         event.setCancelled(true);
-        event.getPlayer().sendMessage("" + event.getBlock().getType().toString());
+        // Adding the data to players' data
         if (event.getBlock().getType().equals(Material.OAK_LOG)) {
             PlayerData.addWood(event.getPlayer());
         } else if (event.getBlock().getType().equals(Material.STONE)) {
@@ -122,6 +129,7 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         } else if (event.getBlock().getType().equals(Material.SWEET_BERRY_BUSH)) {
             PlayerData.addFood(event.getPlayer());
         }
+        // TODO: Add structure removal
     }
 
 }

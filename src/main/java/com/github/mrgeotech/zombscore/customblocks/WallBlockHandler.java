@@ -21,11 +21,10 @@ public class WallBlockHandler implements CustomBlockHandler {
 
     @Override
     public void addLocation(Location origin) {
+        // Creating a new wall
         Map<Location,Material> locations = new HashMap<>();
         locations.put(origin.add(0, 1, 0), Material.STONE);
         locations.put(origin.add(0, 2, 0), Material.STONE);
-        origin.getWorld().getBlockAt(origin.add(0, 1, 0)).setType(Material.STONE);
-        origin.getWorld().getBlockAt(origin.add(0, 2, 0)).setType(Material.STONE);
         structures.add(new Structure(origin.toString(), "wall", locations));
     }
 

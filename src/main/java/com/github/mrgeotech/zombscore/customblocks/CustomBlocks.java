@@ -5,13 +5,17 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
+/**
+ * The manager for all custom blocks/structures.
+ * It has a list of all block locations for testing for block location purposes.
+ */
 public class CustomBlocks {
 
-    private Map<ItemStack,CustomBlockHandler> customBlockHandlers;
+    private List<CustomBlockHandler> customBlockHandlers;
     private static List<Location> locations;
 
     public CustomBlocks() {
-        customBlockHandlers = new HashMap<>();
+        customBlockHandlers = new ArrayList<>();
         locations = new ArrayList<>();
     }
 
