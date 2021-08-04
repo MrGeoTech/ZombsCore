@@ -15,6 +15,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -48,6 +49,10 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         // Plugin shutdown logic
         Bukkit.getLogger().log(Level.INFO, ChatColor.translateAlternateColorCodes('&', "&8[&3ZombsCore&8] &cDisabling..."));
         Bukkit.getScheduler().cancelTasks(this);
+    }
+
+    public static Plugin getInstance() {
+        return Bukkit.getPluginManager().getPlugin("ZombsCore");
     }
 
     @EventHandler
