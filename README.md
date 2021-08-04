@@ -1,5 +1,5 @@
 # ZombsCore
 
-### The main plugin for ZombsBD.minehut.gg
+The main plugin for ZombsBD.minehut.gg
 
-### Based on Zombs.io
+Based on Zombs.io
