@@ -1,0 +1,64 @@
+package com.github.mrgeotech.zombscore.customblocks;
+
+import com.github.mrgeotech.zombscore.ReflectionUtils;
+import net.minecraft.server.BlockPosition;
+import net.minecraft.server.PacketPlayOutBlockBreakAnimation;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+
+import java.util.List;
+import java.util.Map;
+
+public class Structure {
+
+    private String id;
+    private String type;
+    private Map<Location,Material> blocks;
+
+    public Structure(String id, String type, Map<Location,Material> blocks) {
+        this.id = id;
+        this.type = type;
+        this.blocks = blocks;
+        for (Location location : blocks.keySet()) {
+            location.getWorld().getBlockAt(location).setType(blocks.get(location));
+        }
+        CustomBlocks.addLocations(blocks.keySet().toArray(new Location[0]));
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public Map<Location,Material> getBlocks() {
+        return blocks;
+    }
+
+    public List<Location> getLocations() {
+        return blocks.keySet().stream().toList();
+    }
+
+    public void setBlock(Location location, Material material) {
+        location.getWorld().getBlockAt(location).setType(material);
+        blocks.put(location, material);
+    }
+
+    public void damageStructure() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            for (Location location : blocks.keySet()) {
+                if (this.distanceFromEachOther(player.getLocation(), location) < 50)
+                    ReflectionUtils.sendPacket(player, new PacketPlayOutBlockBreakAnimation(0, new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ()), 5));
+            }
+        }
+    }
+
+    private double distanceFromEachOther(Location pos1, Location pos2) {
+        return Math.sqrt((pos1.getBlockX() - pos2.getBlockX()) + (pos1.getBlockY() - pos2.getBlockY()) + (pos1.getBlockZ() - pos2.getBlockZ()));
+    }
+
+}

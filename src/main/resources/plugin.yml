@@ -1,0 +1,13 @@
+name: ZombsCore
+version: ${project.version}
+main: com.github.mrgeotech.zombscore.ZombsCore
+api-version: 1.16
+authors: [MrGeoTech]
+
+depend: [PlaceholderAPI]
+
+commands:
+  upgrades:
+    description: Used to upgrade tools
+  playerdata:
+    description: Used to get player data
