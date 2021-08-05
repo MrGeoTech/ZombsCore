@@ -2,44 +2,39 @@ package com.github.mrgeotech.zombscore.customblocks;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-/**
- * The manager for all custom blocks/structures.
- * It has a list of all block locations for testing for block location purposes.
- */
 public class StructureManager {
 
-    private static Map<ItemStack, StructureBuilder> builders;
-    private static Map<Location, Structure> structures;
+    private static List<Structure> structures;
 
     public static void init() {
-        builders = new HashMap<>();
-        structures = new HashMap<>();
-        builders.put(new ItemStack(Material.STONE), new WallBuilder());
+        structures = new ArrayList<>();
     }
 
-    public static boolean isPartOfStructure(Location location) {
-        return structures.containsKey(location);
+    public static void createStructure(Map<Location,Material> locations) {
+        structures.add(new Structure(locations));
     }
 
-    public static void removeStructure(Location location) {
-        structures.get(location).deleteStructure();
-        structures.remove(location);
+    public static void deleteStructure(Location location) {
+        for (Structure structure : structures) {
+            if (structure.deleteIfContains(location)) return;
+        }
     }
 
-    public static void damageStructure(Location location) {
-        structures.get(location).damageStructure();
-    }
-
-    public static void addLocation(Location location, Structure structure) {
-        structures.put(location, structure);
-    }
-
-    public static void createStructure(ItemStack item, Location origin) {
-        builders.get(item).addLocation(origin);
+    public static void createWall(Location origin) {
+        Map<Location,Material> temp = new HashMap<>();
+        origin.setY(origin.getBlockY() + 1);
+        System.out.println(origin.toString());
+        temp.put(origin, Material.STONE);
+        origin.setY(origin.getBlockY() + 1);
+        System.out.println(origin.toString());
+        temp.put(origin, Material.STONE);
+        createStructure(temp);
     }
 
 }
