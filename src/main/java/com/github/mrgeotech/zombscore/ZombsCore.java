@@ -1,5 +1,6 @@
 package com.github.mrgeotech.zombscore;
 
+import com.github.mrgeotech.zombscore.customblocks.StructureManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -29,6 +30,8 @@ public final class ZombsCore extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         // Plugin startup logic
+        StructureManager.init();
+
         Bukkit.getLogger().log(Level.INFO, ChatColor.translateAlternateColorCodes('&', "&8[&3ZombsCore&8] &fCreating items..."));
         upgradeCommand = new UpgradeCommand();
 

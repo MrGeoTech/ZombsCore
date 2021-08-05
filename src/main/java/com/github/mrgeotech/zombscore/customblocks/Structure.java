@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Map;
 
-public class Structure {
+class Structure {
 
     private String id;
     private String type;
@@ -27,8 +27,8 @@ public class Structure {
         // Setting the blocks to the material in the world
         for (Location location : blocks.keySet()) {
             location.getWorld().getBlockAt(location).setType(blocks.get(location));
+            StructureManager.addLocation(location, this);
         }
-        CustomBlocks.addLocations(blocks.keySet().toArray(new Location[0]));
     }
 
     public String getId() {
