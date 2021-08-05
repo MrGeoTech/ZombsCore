@@ -2,6 +2,7 @@ package com.github.mrgeotech.zombscore.customblocks;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,25 +17,33 @@ public class StructureManager {
         structures = new ArrayList<>();
     }
 
-    public static void createStructure(Map<Location,Material> locations) {
-        structures.add(new Structure(locations));
+    public static void createStructure(List<Location> locations, List<Material> materials) {
+        structures.add(new Structure(locations, materials));
     }
 
-    public static void deleteStructure(Location location) {
+    public static boolean deleteStructure(Location location) {
         for (Structure structure : structures) {
-            if (structure.deleteIfContains(location)) return;
+            if (structure.deleteIfContains(location)) return true;
+        }
+        return false;
+    }
+
+    public static void deleteAllStructures() {
+        for (Structure structure : structures) {
+            structure.deleteStructure();
         }
     }
 
     public static void createWall(Location origin) {
-        Map<Location,Material> temp = new HashMap<>();
-        origin.setY(origin.getBlockY() + 1);
-        System.out.println(origin.toString());
-        temp.put(origin, Material.STONE);
-        origin.setY(origin.getBlockY() + 1);
-        System.out.println(origin.toString());
-        temp.put(origin, Material.STONE);
-        createStructure(temp);
+        List<Location> tempLoc = new ArrayList<>();
+        List<Material> tempMats = new ArrayList<>();
+        origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
+        tempLoc.add(origin);
+        tempMats.add(Material.STONE);
+        origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
+        tempLoc.add(origin);
+        tempMats.add(Material.STONE);
+        createStructure(tempLoc, tempMats);
     }
 
 }

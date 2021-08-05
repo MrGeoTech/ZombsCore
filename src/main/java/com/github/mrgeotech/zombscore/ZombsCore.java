@@ -80,6 +80,7 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         // Plugin shutdown logic
         Bukkit.getLogger().log(Level.INFO, ChatColor.translateAlternateColorCodes('&', "&8[&3ZombsCore&8] &cDisabling..."));
         Bukkit.getScheduler().cancelTasks(this);
+        StructureManager.deleteAllStructures();
     }
 
     public static Plugin getInstance() {
@@ -126,6 +127,7 @@ public final class ZombsCore extends JavaPlugin implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.hasItem())) return;
         ItemStack item = event.getItem();
+        // Here is where you add the checks for if the player is trying to place a structure
         if (item.getType().equals(Material.STONE)) {
             event.setCancelled(true);
             StructureManager.createWall(event.getClickedBlock().getLocation());
@@ -133,9 +135,13 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         } else if (item.getType().equals(Material.SWEET_BERRIES)) {
             Player player = event.getPlayer();
             if (player.getFoodLevel() < 20) {
-                PlayerData.removeFood(player);
-                player.setFoodLevel(player.getFoodLevel() + 1);
-                player.sendMessage(ChatColor.GREEN + "You have eaten!");
+                if (PlayerData.getFood(player) > 0) {
+                    PlayerData.removeFood(player);
+                    player.setFoodLevel(player.getFoodLevel() + 1);
+                    player.sendMessage(ChatColor.GREEN + "You have eaten!");
+                } else {
+                    player.sendMessage(ChatColor.RED + "You do not have enough food!");
+                }
             } else {
                 player.sendMessage(ChatColor.RED + "Your food bar is full!");
             }
@@ -144,7 +150,6 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         } else if (item.getType().equals(Material.BELL)) {
             event.getPlayer().performCommand("structures");
         }
-        // TODO: Add in custom blocks
     }
 
     @EventHandler
@@ -173,18 +178,18 @@ public final class ZombsCore extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
+        if (event.getPlayer().hasPermission("temp.canbreakblocks")) return;
         event.setCancelled(true);
         // Adding the data to players' data
         Block block = event.getBlock();
         System.out.println(block.getLocation());
+        if (StructureManager.deleteStructure(block.getLocation())) return;
         if (block.getType().equals(Material.OAK_LOG)) {
             PlayerData.addWood(event.getPlayer());
         } else if (block.getType().equals(Material.STONE)) {
             PlayerData.addStone(event.getPlayer());
         } else if (block.getType().equals(Material.SWEET_BERRY_BUSH)) {
             PlayerData.addFood(event.getPlayer());
-        } else {
-            StructureManager.deleteStructure(block.getLocation());
         }
     }
 
