@@ -4,6 +4,7 @@ import com.github.mrgeotech.zombscore.commands.PlayerDataCommand;
 import com.github.mrgeotech.zombscore.commands.StructureCommand;
 import com.github.mrgeotech.zombscore.commands.UpgradeCommand;
 import com.github.mrgeotech.zombscore.customblocks.StructureManager;
+import com.github.mrgeotech.zombscore.scoreboard.ScoreboardBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,9 +18,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,8 +31,9 @@ import java.util.logging.Level;
 
 public final class ZombsCore extends JavaPlugin implements Listener {
 
-    UpgradeCommand upgradeCommand;
-    List<ItemStack> basicInventory;
+    private UpgradeCommand upgradeCommand;
+    private List<ItemStack> basicInventory;
+    private boolean isRunning;
 
     @Override
     public void onEnable() {
@@ -72,12 +72,14 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(upgradeCommand, this);
 
         PlayerData.init();
+        this.isRunning = true;
         Bukkit.getLogger().log(Level.INFO, ChatColor.translateAlternateColorCodes('&', "&8[&3ZombsCore&8] &aComplete!"));
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        this.isRunning = false;
         Bukkit.getLogger().log(Level.INFO, ChatColor.translateAlternateColorCodes('&', "&8[&3ZombsCore&8] &cDisabling..."));
         Bukkit.getScheduler().cancelTasks(this);
         StructureManager.deleteAllStructures();
@@ -125,28 +127,34 @@ public final class ZombsCore extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (!(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.hasItem())) return;
+        if (!event.hasItem()) return;
         ItemStack item = event.getItem();
+        if (item.getType().equals(Material.SWEET_BERRIES) && (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
+            event.setCancelled(true);
+            if (PlayerData.getPlayersLastEvent(event.getPlayer()) < System.currentTimeMillis() - 1000) {
+                Player player = event.getPlayer();
+                if (player.getFoodLevel() < 20) {
+                    if (PlayerData.getFood(player) > 0) {
+                        PlayerData.removeFood(player);
+                        player.setFoodLevel(player.getFoodLevel() + 1);
+                        player.sendMessage(ChatColor.GREEN + "You have eaten!");
+                    } else {
+                        player.sendMessage(ChatColor.RED + "You do not have enough food!");
+                    }
+                } else {
+                    player.sendMessage(ChatColor.RED + "Your food bar is full!");
+                }
+                PlayerData.setPlayersLastEvent(player);
+            }
+        }
+        if (!(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) return;
         // Here is where you add the checks for if the player is trying to place a structure
         if (item.getType().equals(Material.STONE)) {
             event.setCancelled(true);
             StructureManager.createWall(event.getClickedBlock().getLocation());
             event.getPlayer().getInventory().setItem(3, basicInventory.get(3));
-        } else if (item.getType().equals(Material.SWEET_BERRIES)) {
-            Player player = event.getPlayer();
-            if (player.getFoodLevel() < 20) {
-                if (PlayerData.getFood(player) > 0) {
-                    PlayerData.removeFood(player);
-                    player.setFoodLevel(player.getFoodLevel() + 1);
-                    player.sendMessage(ChatColor.GREEN + "You have eaten!");
-                } else {
-                    player.sendMessage(ChatColor.RED + "You do not have enough food!");
-                }
-            } else {
-                player.sendMessage(ChatColor.RED + "Your food bar is full!");
-            }
         } else if (item.getType().equals(Material.NETHER_STAR)) {
-            event.getPlayer().performCommand("updates");
+            event.getPlayer().performCommand("upgrades");
         } else if (item.getType().equals(Material.BELL)) {
             event.getPlayer().performCommand("structures");
         }
@@ -167,12 +175,17 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         final Player player = event.getPlayer();
         // Creates a thread that will wait 5 mins and then deleted the player data
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+            boolean interupted = false;
             try {
                 Thread.sleep(300000);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
+                interupted = true;
+            }
+            if (isRunning && !interupted) {
+                PlayerData.removePlayer(player);
+            } else if (!isRunning) {
                 PlayerData.removePlayer(player);
             }
-            PlayerData.removePlayer(player);
         });
     }
 
@@ -182,14 +195,16 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         event.setCancelled(true);
         // Adding the data to players' data
         Block block = event.getBlock();
-        System.out.println(block.getLocation());
         if (StructureManager.deleteStructure(block.getLocation())) return;
         if (block.getType().equals(Material.OAK_LOG)) {
             PlayerData.addWood(event.getPlayer());
         } else if (block.getType().equals(Material.STONE)) {
             PlayerData.addStone(event.getPlayer());
         } else if (block.getType().equals(Material.SWEET_BERRY_BUSH)) {
-            PlayerData.addFood(event.getPlayer());
+            if (PlayerData.getPlayersLastEvent(event.getPlayer()) < System.currentTimeMillis() - 1000) {
+                PlayerData.addFood(event.getPlayer());
+                PlayerData.setPlayersLastEvent(event.getPlayer());
+            }
         }
     }
 

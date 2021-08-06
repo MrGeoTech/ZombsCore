@@ -122,14 +122,14 @@ public class UpgradeCommand implements CommandExecutor, Listener {
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GOLD + "Shiny Gold Pickaxe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "shiny-diamond");
-        meta.addEnchant(Enchantment.DIG_SPEED, 3, true);
+        meta.addEnchant(Enchantment.DIG_SPEED, 2, true);
         item.setItemMeta(meta);
         pickaxeUpgrades.put("shiny-gold", item);
         item = new ItemStack(Material.DIAMOND_PICKAXE, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.AQUA + "Shiny Diamond Pickaxe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "none");
-        meta.addEnchant(Enchantment.DIG_SPEED, 7, true);
+        meta.addEnchant(Enchantment.DIG_SPEED, 6, true);
         item.setItemMeta(meta);
         pickaxeUpgrades.put("shiny-diamond", item);
         item = new ItemStack(Material.WOODEN_SWORD, 1);
@@ -167,14 +167,14 @@ public class UpgradeCommand implements CommandExecutor, Listener {
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GOLD + "Shiny Gold Sword");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "shiny-diamond");
-        meta.addEnchant(Enchantment.DIG_SPEED, 3, true);
+        meta.addEnchant(Enchantment.DAMAGE_ALL, 2, true);
         item.setItemMeta(meta);
         swordUpgrades.put("shiny-gold", item);
         item = new ItemStack(Material.DIAMOND_SWORD, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.AQUA + "Shiny Diamond Sword");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "none");
-        meta.addEnchant(Enchantment.DIG_SPEED, 7, true);
+        meta.addEnchant(Enchantment.DAMAGE_ALL, 5, true);
         item.setItemMeta(meta);
         swordUpgrades.put("shiny-diamond", item);
         System.gc(); // Much needed garbage collection
@@ -243,7 +243,6 @@ public class UpgradeCommand implements CommandExecutor, Listener {
                                 inventory.setItem(1, axeUpgrades.get(next));
                             else
                                 player.sendMessage(ChatColor.RED + "You already have the best axe!");
-                            player.closeInventory();
                         case 12:
                             // Upgrading the pickaxe
                             next = inventory.getItem(2).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
@@ -251,7 +250,6 @@ public class UpgradeCommand implements CommandExecutor, Listener {
                                 inventory.setItem(2, pickaxeUpgrades.get(next));
                             else
                                 player.sendMessage(ChatColor.RED + "You already have the best pickaxe!");
-                            player.closeInventory();
                         case 14:
                             // Upgrading the sword
                             next = inventory.getItem(0).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
@@ -259,10 +257,8 @@ public class UpgradeCommand implements CommandExecutor, Listener {
                                 inventory.setItem(0, swordUpgrades.get(next));
                             else
                                 player.sendMessage(ChatColor.RED + "You already have the best sword!");
-                            player.closeInventory();
                         case 16:
                             // Upgrading/getting pets
-                            player.closeInventory();
                             player.sendMessage("Coming soon");
                     }
                 } else if (event.getView().getTitle().equalsIgnoreCase("Structures")) {
