@@ -129,18 +129,22 @@ public final class ZombsCore extends JavaPlugin implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!event.hasItem()) return;
         ItemStack item = event.getItem();
-        if (item.getType().equals(Material.SWEET_BERRIES)) {
-            Player player = event.getPlayer();
-            if (player.getFoodLevel() < 20) {
-                if (PlayerData.getFood(player) > 0) {
-                    PlayerData.removeFood(player);
-                    player.setFoodLevel(player.getFoodLevel() + 1);
-                    player.sendMessage(ChatColor.GREEN + "You have eaten!");
+        if (item.getType().equals(Material.SWEET_BERRIES) && (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
+            event.setCancelled(true);
+            if (PlayerData.getPlayersLastEvent(event.getPlayer()) < System.currentTimeMillis() - 1000) {
+                Player player = event.getPlayer();
+                if (player.getFoodLevel() < 20) {
+                    if (PlayerData.getFood(player) > 0) {
+                        PlayerData.removeFood(player);
+                        player.setFoodLevel(player.getFoodLevel() + 1);
+                        player.sendMessage(ChatColor.GREEN + "You have eaten!");
+                    } else {
+                        player.sendMessage(ChatColor.RED + "You do not have enough food!");
+                    }
                 } else {
-                    player.sendMessage(ChatColor.RED + "You do not have enough food!");
+                    player.sendMessage(ChatColor.RED + "Your food bar is full!");
                 }
-            } else {
-                player.sendMessage(ChatColor.RED + "Your food bar is full!");
+                PlayerData.setPlayersLastEvent(player);
             }
         }
         if (!(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) return;
@@ -150,7 +154,7 @@ public final class ZombsCore extends JavaPlugin implements Listener {
             StructureManager.createWall(event.getClickedBlock().getLocation());
             event.getPlayer().getInventory().setItem(3, basicInventory.get(3));
         } else if (item.getType().equals(Material.NETHER_STAR)) {
-            event.getPlayer().performCommand("updates");
+            event.getPlayer().performCommand("upgrades");
         } else if (item.getType().equals(Material.BELL)) {
             event.getPlayer().performCommand("structures");
         }
@@ -197,7 +201,10 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         } else if (block.getType().equals(Material.STONE)) {
             PlayerData.addStone(event.getPlayer());
         } else if (block.getType().equals(Material.SWEET_BERRY_BUSH)) {
-            PlayerData.addFood(event.getPlayer());
+            if (PlayerData.getPlayersLastEvent(event.getPlayer()) < System.currentTimeMillis() - 1000) {
+                PlayerData.addFood(event.getPlayer());
+                PlayerData.setPlayersLastEvent(event.getPlayer());
+            }
         }
     }
 

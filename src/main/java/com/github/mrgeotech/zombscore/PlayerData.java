@@ -11,11 +11,21 @@ public class PlayerData {
     private static Map<Player,Integer> playerWood;
     private static Map<Player,Integer> playerStone;
     private static Map<Player,Integer> playerFood;
+    private static Map<Player,Long> playerLastEvent;
 
     public static void init() {
         playerWood = new HashMap<>();
         playerStone = new HashMap<>();
         playerFood = new HashMap<>();
+        playerLastEvent = new HashMap<>();
+    }
+
+    public static long getPlayersLastEvent(Player player) {
+        return playerLastEvent.get(player);
+    }
+
+    public static void setPlayersLastEvent(Player player) {
+        playerLastEvent.put(player, System.currentTimeMillis());
     }
 
     public static void addWood(Player player) {
@@ -82,6 +92,7 @@ public class PlayerData {
         playerWood.put(player, 0);
         playerStone.put(player, 0);
         playerFood.put(player, 0);
+        playerLastEvent.put(player, System.currentTimeMillis());
         ScoreboardBuilder.setScoreboard(player);
     }
 
@@ -93,6 +104,7 @@ public class PlayerData {
         playerWood.remove(player);
         playerStone.remove(player);
         playerFood.remove(player);
+        playerLastEvent.remove(player);
     }
 
     public static int getWood(Player player) {
