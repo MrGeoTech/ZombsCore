@@ -81,8 +81,8 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         // Plugin shutdown logic
         this.isRunning = false;
         Bukkit.getLogger().log(Level.INFO, ChatColor.translateAlternateColorCodes('&', "&8[&3ZombsCore&8] &cDisabling..."));
-        Bukkit.getScheduler().cancelTasks(this);
         StructureManager.deleteAllStructures();
+        Bukkit.getScheduler().cancelTasks(this);
     }
 
     public static Plugin getInstance() {
@@ -127,11 +127,18 @@ public final class ZombsCore extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.hasBlock() && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            Player player = event.getPlayer();
+            if (StructureManager.clickingAtStructure(event.getClickedBlock().getLocation(), player) && player.isSneaking()) {
+                StructureManager.upgradeStructureAt(event.getClickedBlock().getLocation());
+                return;
+            }
+        }
         if (!event.hasItem()) return;
         ItemStack item = event.getItem();
         if (item.getType().equals(Material.SWEET_BERRIES) && (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
             event.setCancelled(true);
-            if (PlayerData.getPlayersLastEvent(event.getPlayer()) < System.currentTimeMillis() - 1000) {
+            if (PlayerData.getPlayersLastEvent(event.getPlayer()) < System.currentTimeMillis() - 250) {
                 Player player = event.getPlayer();
                 if (player.getFoodLevel() < 20) {
                     if (PlayerData.getFood(player) > 0) {
@@ -149,10 +156,15 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         }
         if (!(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) return;
         // Here is where you add the checks for if the player is trying to place a structure
-        if (item.getType().equals(Material.STONE)) {
+        if (item.getType().equals(Material.STONE) && event.hasBlock()) {
             event.setCancelled(true);
-            StructureManager.createWall(event.getClickedBlock().getLocation());
-            event.getPlayer().getInventory().setItem(3, basicInventory.get(3));
+            if (event.getClickedBlock().getType().equals(Material.GRASS_BLOCK)) {
+                StructureManager.createWall(event.getClickedBlock().getLocation(), event.getPlayer());
+                if (!event.getPlayer().isSneaking())
+                    event.getPlayer().getInventory().setItem(3, basicInventory.get(3));
+            } else {
+                event.getPlayer().sendMessage(ChatColor.RED + "You must place structures on the ground");
+            }
         } else if (item.getType().equals(Material.NETHER_STAR)) {
             event.getPlayer().performCommand("upgrades");
         } else if (item.getType().equals(Material.BELL)) {
@@ -193,15 +205,15 @@ public final class ZombsCore extends JavaPlugin implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.getPlayer().hasPermission("temp.canbreakblocks")) return;
         event.setCancelled(true);
-        // Adding the data to players' data
         Block block = event.getBlock();
         if (StructureManager.deleteStructure(block.getLocation())) return;
+        // Adding the data to players' data
         if (block.getType().equals(Material.OAK_LOG)) {
             PlayerData.addWood(event.getPlayer());
         } else if (block.getType().equals(Material.STONE)) {
             PlayerData.addStone(event.getPlayer());
         } else if (block.getType().equals(Material.SWEET_BERRY_BUSH)) {
-            if (PlayerData.getPlayersLastEvent(event.getPlayer()) < System.currentTimeMillis() - 1000) {
+            if (PlayerData.getPlayersLastEvent(event.getPlayer()) < System.currentTimeMillis() - 250) {
                 PlayerData.addFood(event.getPlayer());
                 PlayerData.setPlayersLastEvent(event.getPlayer());
             }

@@ -19,7 +19,9 @@ public class PlayerDataCommand implements CommandExecutor {
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6---Player Data for " + player.getDisplayName() + "&6---\n" +
                 "&6- Wood: " + PlayerData.getWood(player) + "\n" +
                 "&6- Stone: " + PlayerData.getStone(player) + "\n" +
-                "&6- Food: " + PlayerData.getFood(player)));
+                "&6- Food: " + PlayerData.getFood(player) + "\n" +
+                "&6- Gold: " + PlayerData.getGold(player) + "\n" +
+                "&6- Walls Left: " + PlayerData.getStructuresLeft(player, 0)));
         return true;
     }
 

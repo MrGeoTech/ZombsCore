@@ -1,5 +1,6 @@
 package com.github.mrgeotech.zombscore.commands;
 
+import com.github.mrgeotech.zombscore.PlayerData;
 import com.github.mrgeotech.zombscore.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -11,6 +12,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StructureCommand implements CommandExecutor {
 
     @Override
@@ -21,7 +25,9 @@ public class StructureCommand implements CommandExecutor {
         ItemStack item = new ItemStack(Material.STONE);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.WHITE + "Wall");
-        // TODO: Add lore that displays how many more they can place using PlayerData
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.DARK_GRAY + "You have " + ChatColor.GOLD  + "" + PlayerData.getStructuresLeft(((Player) sender), 0) + "" + ChatColor.DARK_GRAY + " left!");
+        meta.setLore(lore);
         item.setItemMeta(meta);
         inventory.setItem(9, item);
         ((Player) sender).openInventory(inventory);
