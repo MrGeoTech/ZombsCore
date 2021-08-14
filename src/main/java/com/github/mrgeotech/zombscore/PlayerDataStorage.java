@@ -1,6 +1,6 @@
 package com.github.mrgeotech.zombscore;
 
-import com.github.mrgeotech.zombscore.customblocks.Cost;
+import com.github.mrgeotech.zombscore.utils.Cost;
 
 public class PlayerDataStorage {
 

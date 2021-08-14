@@ -3,6 +3,8 @@ package com.github.mrgeotech.zombscore.commands;
 import com.github.mrgeotech.zombscore.PlayerData;
 import com.github.mrgeotech.zombscore.Utils;
 import com.github.mrgeotech.zombscore.ZombsCore;
+import com.github.mrgeotech.zombscore.utils.Cost;
+import com.github.mrgeotech.zombscore.utils.ToolUpgrade;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -32,9 +34,9 @@ public class UpgradeCommand implements CommandExecutor, Listener {
 
     private Plugin plugin;
 
-    private Map<String,ItemStack> axeUpgrades;
-    private Map<String,ItemStack> pickaxeUpgrades;
-    private Map<String,ItemStack> swordUpgrades;
+    private Map<String, ToolUpgrade> axeUpgrades;
+    private Map<String, ToolUpgrade> pickaxeUpgrades;
+    private Map<String, ToolUpgrade> swordUpgrades;
 
     public UpgradeCommand() {
         axeUpgrades = new HashMap<>();
@@ -48,135 +50,135 @@ public class UpgradeCommand implements CommandExecutor, Listener {
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "stone");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "not-worldedit"), PersistentDataType.INTEGER, 1);
         item.setItemMeta(meta);
-        axeUpgrades.put("wood", item);
+        axeUpgrades.put("wood", new ToolUpgrade(item, new Cost(0, 0, 0)));
         item = new ItemStack(Material.STONE_AXE, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GRAY + "Stone Axe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "iron");
         item.setItemMeta(meta);
-        axeUpgrades.put("stone", item);
+        axeUpgrades.put("stone", new ToolUpgrade(item, new Cost(0, 0, 100)));
         item = new ItemStack(Material.IRON_AXE, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.WHITE + "Iron Axe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "gold");
         item.setItemMeta(meta);
-        axeUpgrades.put("iron", item);
+        axeUpgrades.put("iron", new ToolUpgrade(item, new Cost(0, 0, 1000)));
         item = new ItemStack(Material.GOLDEN_AXE, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GOLD + "Golden Axe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "diamond");
         item.setItemMeta(meta);
-        axeUpgrades.put("gold", item);
+        axeUpgrades.put("gold", new ToolUpgrade(item, new Cost(0, 0, 2000)));
         item = new ItemStack(Material.DIAMOND_AXE, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.AQUA + "Diamond Axe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "shiny-gold");
         item.setItemMeta(meta);
-        axeUpgrades.put("diamond", item);
+        axeUpgrades.put("diamond", new ToolUpgrade(item, new Cost(0, 0, 4000)));
         item = new ItemStack(Material.GOLDEN_AXE, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GOLD + "Shiny Gold Axe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "shiny-diamond");
         meta.addEnchant(Enchantment.DIG_SPEED, 3, true);
         item.setItemMeta(meta);
-        axeUpgrades.put("shiny-gold", item);
+        axeUpgrades.put("shiny-gold", new ToolUpgrade(item, new Cost(0, 0, 6000)));
         item = new ItemStack(Material.DIAMOND_AXE, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.AQUA + "Shiny Diamond Axe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "none");
         meta.addEnchant(Enchantment.DIG_SPEED, 7, true);
         item.setItemMeta(meta);
-        axeUpgrades.put("shiny-diamond", item);
+        axeUpgrades.put("shiny-diamond", new ToolUpgrade(item, new Cost(0, 0, 9000)));
         item = new ItemStack(Material.WOODEN_PICKAXE, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.DARK_GRAY + "Wooden Pickaxe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "stone");
         item.setItemMeta(meta);
         // Pickaxes
-        pickaxeUpgrades.put("wood", item);
+        pickaxeUpgrades.put("wood", new ToolUpgrade(item, new Cost(0, 0, 0)));
         item = new ItemStack(Material.STONE_PICKAXE, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GRAY + "Stone Pickaxe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "iron");
         item.setItemMeta(meta);
-        pickaxeUpgrades.put("stone", item);
+        pickaxeUpgrades.put("stone", new ToolUpgrade(item, new Cost(0, 0, 100)));
         item = new ItemStack(Material.IRON_PICKAXE, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.WHITE + "Iron Pickaxe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "gold");
         item.setItemMeta(meta);
-        pickaxeUpgrades.put("iron", item);
+        pickaxeUpgrades.put("iron", new ToolUpgrade(item, new Cost(0, 0, 1000)));
         item = new ItemStack(Material.GOLDEN_PICKAXE, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GOLD + "Golden Pickaxe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "diamond");
         item.setItemMeta(meta);
-        pickaxeUpgrades.put("gold", item);
+        pickaxeUpgrades.put("gold", new ToolUpgrade(item, new Cost(0, 0, 2000)));
         item = new ItemStack(Material.DIAMOND_PICKAXE, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.AQUA + "Diamond Pickaxe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "shiny-gold");
         item.setItemMeta(meta);
-        pickaxeUpgrades.put("diamond", item);
+        pickaxeUpgrades.put("diamond", new ToolUpgrade(item, new Cost(0, 0, 4000)));
         item = new ItemStack(Material.GOLDEN_PICKAXE, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GOLD + "Shiny Gold Pickaxe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "shiny-diamond");
         meta.addEnchant(Enchantment.DIG_SPEED, 2, true);
         item.setItemMeta(meta);
-        pickaxeUpgrades.put("shiny-gold", item);
+        pickaxeUpgrades.put("shiny-gold", new ToolUpgrade(item, new Cost(0, 0, 6000)));
         item = new ItemStack(Material.DIAMOND_PICKAXE, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.AQUA + "Shiny Diamond Pickaxe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "none");
         meta.addEnchant(Enchantment.DIG_SPEED, 5, true);
         item.setItemMeta(meta);
-        pickaxeUpgrades.put("shiny-diamond", item);
+        pickaxeUpgrades.put("shiny-diamond", new ToolUpgrade(item, new Cost(0, 0, 9000)));
         item = new ItemStack(Material.WOODEN_SWORD, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.DARK_GRAY + "Wooden Sword");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "stone");
         item.setItemMeta(meta);
         // Swords
-        swordUpgrades.put("wood", item);
+        swordUpgrades.put("wood", new ToolUpgrade(item, new Cost(0, 0, 0)));
         item = new ItemStack(Material.STONE_SWORD, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GRAY + "Stone Sword");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "iron");
         item.setItemMeta(meta);
-        swordUpgrades.put("stone", item);
+        swordUpgrades.put("stone", new ToolUpgrade(item, new Cost(0, 0, 100)));
         item = new ItemStack(Material.IRON_SWORD, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.WHITE + "Iron Sword");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "gold");
         item.setItemMeta(meta);
-        swordUpgrades.put("iron", item);
+        swordUpgrades.put("iron", new ToolUpgrade(item, new Cost(0, 0, 1000)));
         item = new ItemStack(Material.GOLDEN_SWORD, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GOLD + "Golden Sword");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "diamond");
         item.setItemMeta(meta);
-        swordUpgrades.put("gold", item);
+        swordUpgrades.put("gold", new ToolUpgrade(item, new Cost(0, 0, 2000)));
         item = new ItemStack(Material.DIAMOND_SWORD, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.AQUA + "Diamond Sword");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "shiny-gold");
         item.setItemMeta(meta);
-        swordUpgrades.put("diamond", item);
+        swordUpgrades.put("diamond", new ToolUpgrade(item, new Cost(0, 0, 4000)));
         item = new ItemStack(Material.GOLDEN_SWORD, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GOLD + "Shiny Gold Sword");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "shiny-diamond");
         meta.addEnchant(Enchantment.DAMAGE_ALL, 2, true);
         item.setItemMeta(meta);
-        swordUpgrades.put("shiny-gold", item);
+        swordUpgrades.put("shiny-gold", new ToolUpgrade(item, new Cost(0, 0, 6000)));
         item = new ItemStack(Material.DIAMOND_SWORD, 1);
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.AQUA + "Shiny Diamond Sword");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "none");
         meta.addEnchant(Enchantment.DAMAGE_ALL, 5, true);
         item.setItemMeta(meta);
-        swordUpgrades.put("shiny-diamond", item);
+        swordUpgrades.put("shiny-diamond", new ToolUpgrade(item, new Cost(0, 0, 9000)));
         System.gc(); // Much needed garbage collection
     }
 
@@ -237,25 +239,34 @@ public class UpgradeCommand implements CommandExecutor, Listener {
                     case 10:
                         // Upgrading the axe
                         next = inventory.getItem(1).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
-                        if (!next.equalsIgnoreCase("none"))
-                            inventory.setItem(1, axeUpgrades.get(next));
-                        else
+                        if (!next.equalsIgnoreCase("none")) {
+                            if (PlayerData.removeCost(player, axeUpgrades.get(next).getCost()))
+                                inventory.setItem(1, axeUpgrades.get(next).getItem());
+                            else
+                                player.sendMessage(ChatColor.RED + "You do not have enough resources!");
+                        } else
                             player.sendMessage(ChatColor.RED + "You already have the best axe!");
                         break;
                     case 12:
                         // Upgrading the pickaxe
                         next = inventory.getItem(2).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
-                        if (!next.equalsIgnoreCase("none"))
-                            inventory.setItem(2, pickaxeUpgrades.get(next));
-                        else
+                        if (!next.equalsIgnoreCase("none")) {
+                            if (PlayerData.removeCost(player, pickaxeUpgrades.get(next).getCost()))
+                                inventory.setItem(2, pickaxeUpgrades.get(next).getItem());
+                            else
+                                player.sendMessage(ChatColor.RED + "You do not have enough resources!");
+                        } else
                             player.sendMessage(ChatColor.RED + "You already have the best pickaxe!");
                         break;
                     case 14:
                         // Upgrading the sword
                         next = inventory.getItem(0).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
-                        if (!next.equalsIgnoreCase("none"))
-                            inventory.setItem(0, swordUpgrades.get(next));
-                        else
+                        if (!next.equalsIgnoreCase("none")) {
+                            if (PlayerData.removeCost(player, swordUpgrades.get(next).getCost()))
+                                inventory.setItem(0, swordUpgrades.get(next).getItem());
+                            else
+                                player.sendMessage(ChatColor.RED + "You do not have enough resources!");
+                        } else
                             player.sendMessage(ChatColor.RED + "You already have the best sword!");
                         break;
                     case 16:
@@ -277,15 +288,15 @@ public class UpgradeCommand implements CommandExecutor, Listener {
         });
     }
 
-    public Map<String, ItemStack> getAxeUpgrades() {
+    public Map<String, ToolUpgrade> getAxeUpgrades() {
         return axeUpgrades;
     }
 
-    public Map<String, ItemStack> getPickaxeUpgrades() {
+    public Map<String, ToolUpgrade> getPickaxeUpgrades() {
         return pickaxeUpgrades;
     }
 
-    public Map<String, ItemStack> getSwordUpgrades() {
+    public Map<String, ToolUpgrade> getSwordUpgrades() {
         return swordUpgrades;
     }
 

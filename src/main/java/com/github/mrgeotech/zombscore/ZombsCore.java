@@ -42,9 +42,9 @@ public final class ZombsCore extends JavaPlugin implements Listener {
 
         StructureManager.init();
         basicInventory = new ArrayList<>();
-        basicInventory.add(upgradeCommand.getSwordUpgrades().get("wood"));
-        basicInventory.add(upgradeCommand.getAxeUpgrades().get("wood"));
-        basicInventory.add(upgradeCommand.getPickaxeUpgrades().get("wood"));
+        basicInventory.add(upgradeCommand.getSwordUpgrades().get("wood").getItem());
+        basicInventory.add(upgradeCommand.getAxeUpgrades().get("wood").getItem());
+        basicInventory.add(upgradeCommand.getPickaxeUpgrades().get("wood").getItem());
         ItemStack item = new ItemStack(Material.BELL, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + "Structures");

@@ -1,6 +1,7 @@
 package com.github.mrgeotech.zombscore.customblocks;
 
 import com.github.mrgeotech.zombscore.PlayerData;
+import com.github.mrgeotech.zombscore.utils.Cost;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;

@@ -1,4 +1,4 @@
-package com.github.mrgeotech.zombscore.customblocks;
+package com.github.mrgeotech.zombscore.utils;
 
 public class Cost {
 
