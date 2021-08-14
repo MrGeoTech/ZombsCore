@@ -3,6 +3,7 @@ package com.github.mrgeotech.zombscore;
 import com.github.mrgeotech.zombscore.customblocks.Cost;
 import com.github.mrgeotech.zombscore.customblocks.StructureManager;
 import com.github.mrgeotech.zombscore.scoreboard.ScoreboardBuilder;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerEditBookEvent;
 
@@ -153,10 +154,21 @@ public class PlayerData {
         }
     }
 
-    public static void removeCost(Player player, Cost cost) {
-        playerData.get(player).addToWood(-cost.getWood());
-        playerData.get(player).addToStone(-cost.getStone());
-        playerData.get(player).addToGold(-cost.getGold());
+    public static void addCost(Player player, Cost cost) {
+        playerData.get(player).addToWood(cost.getWood());
+        playerData.get(player).addToStone(cost.getStone());
+        playerData.get(player).addToGold(cost.getGold());
+    }
+
+    public static boolean removeCost(Player player, Cost cost) {
+        if (cost.canRemove(cost)) {
+            playerData.get(player).addToWood(-cost.getWood());
+            playerData.get(player).addToStone(-cost.getStone());
+            playerData.get(player).addToGold(-cost.getGold());
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

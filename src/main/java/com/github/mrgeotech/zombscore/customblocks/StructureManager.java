@@ -64,6 +64,10 @@ public class StructureManager {
             player.sendMessage(ChatColor.RED + "You do not have any more walls!");
             return;
         }
+        if (!PlayerData.removeCost(player, costMap.get("0:0"))) {
+            player.sendMessage(ChatColor.RED + "You do not have enough resources!");
+            return;
+        }
         List<Location> tempLoc = new ArrayList<>();
         origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
         tempLoc.add(origin);
@@ -75,15 +79,29 @@ public class StructureManager {
     public static void upgradeStructureAt(Location location) {
         for (Structure structure : structures) {
             if (structure.contains(location)) {
-                Cost cost = costMap.get(structure.getType() + ":" + structure.getLevel());
+                Cost cost = costMap.get((structure.getType() + 1) + ":" + structure.getLevel());
                 Player player = structure.getOwner();
-                if (cost.getWood() < PlayerData.getWood(player) && cost.getStone() < PlayerData.getStone(player) && cost.getGold() < PlayerData.getGold(player)) {
+                if (PlayerData.removeCost(player, cost)) {
                     structure.upgrade();
-                    PlayerData.removeCost(player, cost);
+                } else {
+                    player.sendMessage(ChatColor.RED + "You do not have enough resources!");
                 }
                 return;
             }
         }
+    }
+
+    public static boolean sellStructureAt(Location location) {
+        for (int i = 0; i < structures.size(); i++) {
+            if (structures.get(i).contains(location)) {
+                Structure temp = structures.get(i);
+                PlayerData.addCost(temp.getOwner(), costMap.get(temp.getType() + ":" + temp.getLevel()).toSellPrice());
+                temp.deleteStructure();
+                structures.remove(i);
+                return true;
+            }
+        }
+        return false;
     }
 
 }

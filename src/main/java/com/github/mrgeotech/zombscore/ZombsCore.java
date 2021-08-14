@@ -4,7 +4,6 @@ import com.github.mrgeotech.zombscore.commands.PlayerDataCommand;
 import com.github.mrgeotech.zombscore.commands.StructureCommand;
 import com.github.mrgeotech.zombscore.commands.UpgradeCommand;
 import com.github.mrgeotech.zombscore.customblocks.StructureManager;
-import com.github.mrgeotech.zombscore.scoreboard.ScoreboardBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -85,6 +84,13 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         Bukkit.getScheduler().cancelTasks(this);
     }
 
+    private boolean allEquals(Material mat, Material... mats) {
+        for (Material temp : mats) {
+            if (mat.equals(temp)) return true;
+        }
+        return false;
+    }
+
     public static Plugin getInstance() {
         return Bukkit.getPluginManager().getPlugin("ZombsCore");
     }
@@ -128,16 +134,20 @@ public final class ZombsCore extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.hasBlock() && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-            Player player = event.getPlayer();
-            if (StructureManager.clickingAtStructure(event.getClickedBlock().getLocation(), player) && player.isSneaking()) {
-                StructureManager.upgradeStructureAt(event.getClickedBlock().getLocation());
-                return;
+            event.setCancelled(true);
+            Material mat = event.getClickedBlock().getType();
+            if (mat.equals(Material.OAK_WOOD) || mat.equals(Material.STONE) || mat.equals(Material.IRON_BLOCK) || mat.equals(Material.GOLD_BLOCK) || mat.equals(Material.DIAMOND_BLOCK) || mat.equals(Material.LAPIS_BLOCK) || mat.equals(Material.REDSTONE_BLOCK)) {
+                Player player = event.getPlayer();
+                if (StructureManager.clickingAtStructure(event.getClickedBlock().getLocation(), player) && player.isSneaking()) {
+                    StructureManager.upgradeStructureAt(event.getClickedBlock().getLocation());
+                    return;
+                }
             }
         }
-        if (!event.hasItem()) return;
+        if (!event.hasItem() && !(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) return;
+        event.setCancelled(true);
         ItemStack item = event.getItem();
-        if (item.getType().equals(Material.SWEET_BERRIES) && (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
-            event.setCancelled(true);
+        if (item.getType().equals(Material.SWEET_BERRIES)) {
             if (PlayerData.getPlayersLastEvent(event.getPlayer()) < System.currentTimeMillis() - 250) {
                 Player player = event.getPlayer();
                 if (player.getFoodLevel() < 20) {
@@ -153,22 +163,20 @@ public final class ZombsCore extends JavaPlugin implements Listener {
                 }
                 PlayerData.setPlayersLastEvent(player);
             }
-        }
-        if (!(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) return;
-        // Here is where you add the checks for if the player is trying to place a structure
-        if (item.getType().equals(Material.STONE) && event.hasBlock()) {
-            event.setCancelled(true);
-            if (event.getClickedBlock().getType().equals(Material.GRASS_BLOCK)) {
-                StructureManager.createWall(event.getClickedBlock().getLocation(), event.getPlayer());
-                if (!event.getPlayer().isSneaking())
-                    event.getPlayer().getInventory().setItem(3, basicInventory.get(3));
-            } else {
-                event.getPlayer().sendMessage(ChatColor.RED + "You must place structures on the ground");
-            }
         } else if (item.getType().equals(Material.NETHER_STAR)) {
             event.getPlayer().performCommand("upgrades");
         } else if (item.getType().equals(Material.BELL)) {
             event.getPlayer().performCommand("structures");
+        } else if (event.hasBlock()) {
+            if (item.getType().equals(Material.STONE)) {
+                if (event.getClickedBlock().getType().equals(Material.GRASS_BLOCK)) {
+                    StructureManager.createWall(event.getClickedBlock().getLocation(), event.getPlayer());
+                    if (!event.getPlayer().isSneaking())
+                        event.getPlayer().getInventory().setItem(3, basicInventory.get(3));
+                } else {
+                    event.getPlayer().sendMessage(ChatColor.RED + "You must place structures on the ground");
+                }
+            }
         }
     }
 
@@ -206,7 +214,7 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         if (event.getPlayer().hasPermission("temp.canbreakblocks")) return;
         event.setCancelled(true);
         Block block = event.getBlock();
-        if (StructureManager.deleteStructure(block.getLocation())) return;
+        if (StructureManager.sellStructureAt(block.getLocation())) return;
         // Adding the data to players' data
         if (block.getType().equals(Material.OAK_LOG)) {
             PlayerData.addWood(event.getPlayer());
