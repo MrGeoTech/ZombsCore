@@ -133,19 +133,46 @@ public final class ZombsCore extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.hasBlock() && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-            event.setCancelled(true);
-            Material mat = event.getClickedBlock().getType();
-            if (mat.equals(Material.OAK_WOOD) || mat.equals(Material.STONE) || mat.equals(Material.IRON_BLOCK) || mat.equals(Material.GOLD_BLOCK) || mat.equals(Material.DIAMOND_BLOCK) || mat.equals(Material.LAPIS_BLOCK) || mat.equals(Material.REDSTONE_BLOCK)) {
+        if (event.hasBlock()) {
+            Block block = event.getClickedBlock();
+            // If the player broke a block
+            if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                // If the player is trying to remove a structure that is at a location, it will return true
+                if (PlayerData.getPlayersLastEvent(event.getPlayer()) < System.currentTimeMillis() - 250) {
+                    if (StructureManager.sellStructureAt(block.getLocation(), event.getPlayer())) {
+                        event.setCancelled(true);
+                        PlayerData.setPlayersLastEvent(event.getPlayer());
+                    }
+                }
+                // Always return on a left block click so that it doesn't get processed later
+                return;
+            // If the player is tying to upgrade the block
+            } else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                event.setCancelled(true);
+                Material mat = block.getType();
                 Player player = event.getPlayer();
-                if (StructureManager.clickingAtStructure(event.getClickedBlock().getLocation(), player) && player.isSneaking()) {
-                    StructureManager.upgradeStructureAt(event.getClickedBlock().getLocation());
-                    return;
+                // If it is a type that could be a structure
+                if (PlayerData.getPlayersLastEvent(player) < System.currentTimeMillis() - 250) {
+                    if ((mat.equals(Material.OAK_WOOD) ||
+                            mat.equals(Material.STONE) ||
+                            mat.equals(Material.IRON_BLOCK) ||
+                            mat.equals(Material.GOLD_BLOCK) ||
+                            mat.equals(Material.DIAMOND_BLOCK) ||
+                            mat.equals(Material.LAPIS_BLOCK) ||
+                            mat.equals(Material.REDSTONE_BLOCK))) {
+                        if (player.isSneaking()) {
+                            if (StructureManager.upgradeStructureAt(block.getLocation(), player)) {
+                                PlayerData.setPlayersLastEvent(player);
+                                return;
+                            }
+                        }
+                    }
                 }
             }
         }
-        if (!event.hasItem() && !(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) return;
         event.setCancelled(true);
+        // Returns if it doesn't have an item or is a left click so that the event doesn't get processed
+        if (!event.hasItem() || event.getAction().equals(Action.LEFT_CLICK_AIR)) return;
         ItemStack item = event.getItem();
         if (item.getType().equals(Material.SWEET_BERRIES)) {
             if (PlayerData.getPlayersLastEvent(event.getPlayer()) < System.currentTimeMillis() - 250) {
@@ -214,7 +241,6 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         if (event.getPlayer().hasPermission("temp.canbreakblocks")) return;
         event.setCancelled(true);
         Block block = event.getBlock();
-        if (StructureManager.sellStructureAt(block.getLocation())) return;
         // Adding the data to players' data
         if (block.getType().equals(Material.OAK_LOG)) {
             PlayerData.addWood(event.getPlayer());

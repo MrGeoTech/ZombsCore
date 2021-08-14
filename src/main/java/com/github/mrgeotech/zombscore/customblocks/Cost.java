@@ -28,8 +28,4 @@ public class Cost {
         return new Cost((int)(wood * .75), (int)(stone * .75), (int)(gold * .75));
     }
 
-    public boolean canRemove(Cost cost) {
-        return (this.wood >= cost.getWood() && this.stone >= cost.getStone() && this.gold >= cost.getGold());
-    }
-
 }

@@ -129,7 +129,7 @@ public class UpgradeCommand implements CommandExecutor, Listener {
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.AQUA + "Shiny Diamond Pickaxe");
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING, "none");
-        meta.addEnchant(Enchantment.DIG_SPEED, 6, true);
+        meta.addEnchant(Enchantment.DIG_SPEED, 5, true);
         item.setItemMeta(meta);
         pickaxeUpgrades.put("shiny-diamond", item);
         item = new ItemStack(Material.WOODEN_SWORD, 1);
@@ -227,51 +227,52 @@ public class UpgradeCommand implements CommandExecutor, Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         event.setCancelled(true);
-        Bukkit.getScheduler().runTaskAsynchronously(ZombsCore.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                if (event.getView().getTitle().equalsIgnoreCase("Upgrades Menu")) {
-                    Player player = (Player) event.getWhoClicked();
-                    PlayerInventory inventory = player.getInventory();
-                    String next;
-                    // The slots that have things that do stuff when clicked
-                    switch (event.getSlot()) {
-                        case 10:
-                            // Upgrading the axe
-                            next = inventory.getItem(1).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
-                            if (!next.equalsIgnoreCase("none"))
-                                inventory.setItem(1, axeUpgrades.get(next));
-                            else
-                                player.sendMessage(ChatColor.RED + "You already have the best axe!");
-                        case 12:
-                            // Upgrading the pickaxe
-                            next = inventory.getItem(2).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
-                            if (!next.equalsIgnoreCase("none"))
-                                inventory.setItem(2, pickaxeUpgrades.get(next));
-                            else
-                                player.sendMessage(ChatColor.RED + "You already have the best pickaxe!");
-                        case 14:
-                            // Upgrading the sword
-                            next = inventory.getItem(0).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
-                            if (!next.equalsIgnoreCase("none"))
-                                inventory.setItem(0, swordUpgrades.get(next));
-                            else
-                                player.sendMessage(ChatColor.RED + "You already have the best sword!");
-                        case 16:
-                            // Upgrading/getting pets
-                            player.sendMessage("Coming soon");
-                    }
-                } else if (event.getView().getTitle().equalsIgnoreCase("Structures")) {
-                    if (!event.getCurrentItem().getType().equals(Material.GRAY_STAINED_GLASS_PANE)) {
-                        event.getWhoClicked().getInventory().setItem(3, event.getCurrentItem());
-                    }
-                } else if (event.getCurrentItem().getType().equals(Material.NETHER_STAR)) {
-                    // If it is the nether star in the players' inventory
-                    ((Player) event.getWhoClicked()).performCommand("/upgrades");
-                } else if (event.getCurrentItem().getType().equals(Material.SWEET_BERRIES)) {
-                    // If it is the sweet berries in the players' inventory
-                    PlayerData.removeFood((Player) event.getWhoClicked());
+        Bukkit.getScheduler().runTaskAsynchronously(ZombsCore.getInstance(), () -> {
+            if (event.getView().getTitle().equalsIgnoreCase("Upgrades Menu")) {
+                Player player = (Player) event.getWhoClicked();
+                PlayerInventory inventory = player.getInventory();
+                String next;
+                // The slots that have things that do stuff when clicked
+                switch (event.getSlot()) {
+                    case 10:
+                        // Upgrading the axe
+                        next = inventory.getItem(1).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
+                        if (!next.equalsIgnoreCase("none"))
+                            inventory.setItem(1, axeUpgrades.get(next));
+                        else
+                            player.sendMessage(ChatColor.RED + "You already have the best axe!");
+                        break;
+                    case 12:
+                        // Upgrading the pickaxe
+                        next = inventory.getItem(2).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
+                        if (!next.equalsIgnoreCase("none"))
+                            inventory.setItem(2, pickaxeUpgrades.get(next));
+                        else
+                            player.sendMessage(ChatColor.RED + "You already have the best pickaxe!");
+                        break;
+                    case 14:
+                        // Upgrading the sword
+                        next = inventory.getItem(0).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
+                        if (!next.equalsIgnoreCase("none"))
+                            inventory.setItem(0, swordUpgrades.get(next));
+                        else
+                            player.sendMessage(ChatColor.RED + "You already have the best sword!");
+                        break;
+                    case 16:
+                        // Upgrading/getting pets
+                        player.sendMessage("Coming soon");
+                        break;
                 }
+            } else if (event.getView().getTitle().equalsIgnoreCase("Structures")) {
+                if (!event.getCurrentItem().getType().equals(Material.GRAY_STAINED_GLASS_PANE)) {
+                    event.getWhoClicked().getInventory().setItem(3, event.getCurrentItem());
+                }
+            } else if (event.getCurrentItem().getType().equals(Material.NETHER_STAR)) {
+                // If it is the nether star in the players' inventory
+                ((Player) event.getWhoClicked()).performCommand("/upgrades");
+            } else if (event.getCurrentItem().getType().equals(Material.SWEET_BERRIES)) {
+                // If it is the sweet berries in the players' inventory
+                PlayerData.removeFood((Player) event.getWhoClicked());
             }
         });
     }

@@ -158,13 +158,15 @@ public class PlayerData {
         playerData.get(player).addToWood(cost.getWood());
         playerData.get(player).addToStone(cost.getStone());
         playerData.get(player).addToGold(cost.getGold());
+        ScoreboardBuilder.updateScoreboard(player);
     }
 
     public static boolean removeCost(Player player, Cost cost) {
-        if (cost.canRemove(cost)) {
+        if (playerData.get(player).canRemove(cost)) {
             playerData.get(player).addToWood(-cost.getWood());
             playerData.get(player).addToStone(-cost.getStone());
             playerData.get(player).addToGold(-cost.getGold());
+            ScoreboardBuilder.updateScoreboard(player);
             return true;
         } else {
             return false;

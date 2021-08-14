@@ -34,32 +34,32 @@ public class Structure {
     }
 
     public void upgrade() {
-        if (level == 0) {
+        level++;
+        if (level == 1) {
             for (int i = 0; i < locations.size(); i++) {
                 locations.get(i).getBlock().setType(Material.STONE);
             }
-        } else if (level == 1) {
+        } else if (level == 2) {
             for (int i = 0; i < locations.size(); i++) {
                 locations.get(i).getBlock().setType(Material.IRON_BLOCK);
             }
-        } else if (level == 2) {
+        } else if (level == 3) {
             for (int i = 0; i < locations.size(); i++) {
                 locations.get(i).getBlock().setType(Material.GOLD_BLOCK);
             }
-        } else if (level == 3) {
+        } else if (level == 4) {
             for (int i = 0; i < locations.size(); i++) {
                 locations.get(i).getBlock().setType(Material.DIAMOND_BLOCK);
             }
-        } else if (level == 4) {
+        } else if (level == 5) {
             for (int i = 0; i < locations.size(); i++) {
                 locations.get(i).getBlock().setType(Material.LAPIS_BLOCK);
             }
-        } else if (level == 5) {
+        } else if (level == 6) {
             for (int i = 0; i < locations.size(); i++) {
                 locations.get(i).getBlock().setType(Material.REDSTONE_BLOCK);
             }
         }
-        level++;
     }
 
     public boolean contains(Location location) {

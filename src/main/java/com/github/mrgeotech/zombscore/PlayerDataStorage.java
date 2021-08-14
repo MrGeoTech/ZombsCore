@@ -1,5 +1,7 @@
 package com.github.mrgeotech.zombscore;
 
+import com.github.mrgeotech.zombscore.customblocks.Cost;
+
 public class PlayerDataStorage {
 
     private int wood;
@@ -68,5 +70,9 @@ public class PlayerDataStorage {
 
     public int getWallsLeft() {
         return wallsLeft;
+    }
+
+    public boolean canRemove(Cost cost) {
+        return (this.wood >= cost.getWood() && this.stone >= cost.getStone() && this.gold >= cost.getGold());
     }
 }

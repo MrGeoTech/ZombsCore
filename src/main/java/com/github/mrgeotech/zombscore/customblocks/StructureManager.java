@@ -76,24 +76,29 @@ public class StructureManager {
         createStructure(tempLoc, player, 0);
     }
 
-    public static void upgradeStructureAt(Location location) {
+    public static boolean upgradeStructureAt(Location location, Player player) {
         for (Structure structure : structures) {
-            if (structure.contains(location)) {
-                Cost cost = costMap.get((structure.getType() + 1) + ":" + structure.getLevel());
-                Player player = structure.getOwner();
-                if (PlayerData.removeCost(player, cost)) {
-                    structure.upgrade();
-                } else {
-                    player.sendMessage(ChatColor.RED + "You do not have enough resources!");
+            if (structure.contains(location) && structure.isOwnedBy(player)) {
+                try {
+                    Cost cost = costMap.get(structure.getType() + ":" + (structure.getLevel() + 1));
+                    if (PlayerData.removeCost(player, cost)) {
+                        structure.upgrade();
+                    } else {
+                        player.sendMessage(ChatColor.RED + "You do not have enough resources!");
+                    }
+                    return true;
+                } catch (NullPointerException e) {
+                    player.sendMessage(ChatColor.RED + "You have upgraded this wall to the max level!");
+                    return true;
                 }
-                return;
             }
         }
+        return false;
     }
 
-    public static boolean sellStructureAt(Location location) {
+    public static boolean sellStructureAt(Location location, Player owner) {
         for (int i = 0; i < structures.size(); i++) {
-            if (structures.get(i).contains(location)) {
+            if (structures.get(i).contains(location) && structures.get(i).isOwnedBy(owner)) {
                 Structure temp = structures.get(i);
                 PlayerData.addCost(temp.getOwner(), costMap.get(temp.getType() + ":" + temp.getLevel()).toSellPrice());
                 temp.deleteStructure();
