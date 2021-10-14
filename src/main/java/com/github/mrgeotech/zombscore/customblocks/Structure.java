@@ -3,6 +3,7 @@ package com.github.mrgeotech.zombscore.customblocks;
 import com.github.mrgeotech.zombscore.PlayerData;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 public class Structure {
 
     private List<Location> locations;
+    private Entity entity;
     private int id;
     private int level;
     private Player owner;

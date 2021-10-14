@@ -20,12 +20,20 @@ public class StructureManager {
     public static void init() {
         structures = new ArrayList<>();
         costMap = new HashMap<>();
+        // Walls
         costMap.put("0:0", new Cost(2, 2, 0));
         costMap.put("0:1", new Cost(4, 4, 5));
         costMap.put("0:2", new Cost(0, 0, 20));
         costMap.put("0:3", new Cost(10, 10, 50));
         costMap.put("0:4", new Cost(15, 15, 100));
         costMap.put("0:5", new Cost(20, 20, 200));
+        // Base heart
+        costMap.put("1:0", new Cost(25, 25, 0));
+        costMap.put("1:1", new Cost(50, 50, 500));
+        costMap.put("1:2", new Cost(75, 75, 1000));
+        costMap.put("1:3", new Cost(125, 125, 5000));
+        costMap.put("1:4", new Cost(200, 200, 10000));
+        costMap.put("1:5", new Cost(500, 500, 50000));
     }
 
     public static void createStructure(List<Location> locations, Player player, int id) {
@@ -89,7 +97,7 @@ public class StructureManager {
                     }
                     return true;
                 } catch (NullPointerException e) {
-                    player.sendMessage(ChatColor.RED + "You have upgraded this wall to the max level!");
+                    player.sendMessage(ChatColor.RED + "You have upgraded this structure to the max level!");
                     return true;
                 }
             }
