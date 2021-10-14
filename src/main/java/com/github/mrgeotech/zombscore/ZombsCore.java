@@ -149,10 +149,36 @@ public final class ZombsCore extends JavaPlugin implements Listener {
             // If the player is tying to upgrade the block
             } else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 event.setCancelled(true);
+                if (event.hasItem()) {
+                    System.out.println(1);
+                    if (event.getItem().getType().equals(Material.STONE)) {
+                        System.out.println(2);
+                        if (event.getClickedBlock().getType().equals(Material.GRASS_BLOCK)) {
+                            System.out.println(3);
+                            StructureManager.createWall(event.getClickedBlock().getLocation(), event.getPlayer());
+                            if (!event.getPlayer().isSneaking())
+                                event.getPlayer().getInventory().setItem(3, basicInventory.get(3));
+                        } else {
+                            event.getPlayer().sendMessage(ChatColor.RED + "You must place structures on the ground");
+                        }
+                        return;
+                    } else if (event.getItem().getType().equals(Material.REDSTONE_BLOCK)) {
+                        System.out.println(4);
+                        if (event.getClickedBlock().getType().equals(Material.GRASS_BLOCK)) {
+                            System.out.println(5);
+                            StructureManager.createBaseHeart(event.getClickedBlock().getLocation(), event.getPlayer());
+                            if (!event.getPlayer().isSneaking())
+                                event.getPlayer().getInventory().setItem(3, basicInventory.get(3));
+                        } else {
+                            event.getPlayer().sendMessage(ChatColor.RED + "You must place structures on the ground");
+                        }
+                        return;
+                    }
+                }
                 Material mat = block.getType();
                 Player player = event.getPlayer();
-                // If it is a type that could be a structure
                 if (PlayerData.getPlayersLastEvent(player) < System.currentTimeMillis() - 250) {
+                    // If it is a type that could be a structure
                     if ((mat.equals(Material.OAK_WOOD) ||
                             mat.equals(Material.STONE) ||
                             mat.equals(Material.IRON_BLOCK) ||
@@ -194,16 +220,6 @@ public final class ZombsCore extends JavaPlugin implements Listener {
             event.getPlayer().performCommand("upgrades");
         } else if (item.getType().equals(Material.BELL)) {
             event.getPlayer().performCommand("structures");
-        } else if (event.hasBlock()) {
-            if (item.getType().equals(Material.STONE)) {
-                if (event.getClickedBlock().getType().equals(Material.GRASS_BLOCK)) {
-                    StructureManager.createWall(event.getClickedBlock().getLocation(), event.getPlayer());
-                    if (!event.getPlayer().isSneaking())
-                        event.getPlayer().getInventory().setItem(3, basicInventory.get(3));
-                } else {
-                    event.getPlayer().sendMessage(ChatColor.RED + "You must place structures on the ground");
-                }
-            }
         }
     }
 

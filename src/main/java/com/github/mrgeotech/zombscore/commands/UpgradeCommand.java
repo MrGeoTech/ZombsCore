@@ -24,7 +24,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 
-import java.nio.BufferUnderflowException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,11 +31,11 @@ import java.util.Map;
 
 public class UpgradeCommand implements CommandExecutor, Listener {
 
-    private Plugin plugin;
+    private final Plugin plugin;
 
-    private Map<String, ToolUpgrade> axeUpgrades;
-    private Map<String, ToolUpgrade> pickaxeUpgrades;
-    private Map<String, ToolUpgrade> swordUpgrades;
+    private final Map<String, ToolUpgrade> axeUpgrades;
+    private final Map<String, ToolUpgrade> pickaxeUpgrades;
+    private final Map<String, ToolUpgrade> swordUpgrades;
 
     public UpgradeCommand() {
         axeUpgrades = new HashMap<>();
@@ -275,7 +274,7 @@ public class UpgradeCommand implements CommandExecutor, Listener {
                         break;
                 }
             } else if (event.getView().getTitle().equalsIgnoreCase("Structures")) {
-                if (!event.getCurrentItem().getType().equals(Material.GRAY_STAINED_GLASS_PANE)) {
+                if (!event.getCurrentItem().getType().equals(Material.GRAY_STAINED_GLASS_PANE) && !(event.getClickedInventory() instanceof PlayerInventory)) {
                     event.getWhoClicked().getInventory().setItem(3, event.getCurrentItem());
                 }
             } else if (event.getCurrentItem().getType().equals(Material.NETHER_STAR)) {
@@ -283,7 +282,21 @@ public class UpgradeCommand implements CommandExecutor, Listener {
                 ((Player) event.getWhoClicked()).performCommand("/upgrades");
             } else if (event.getCurrentItem().getType().equals(Material.SWEET_BERRIES)) {
                 // If it is the sweet berries in the players' inventory
-                PlayerData.removeFood((Player) event.getWhoClicked());
+                if (PlayerData.getPlayersLastEvent((Player) event.getWhoClicked()) < System.currentTimeMillis() - 250) {
+                    Player player = (Player) event.getWhoClicked();
+                    if (player.getFoodLevel() < 20) {
+                        if (PlayerData.getFood(player) > 0) {
+                            PlayerData.removeFood(player);
+                            player.setFoodLevel(player.getFoodLevel() + 1);
+                            player.sendMessage(ChatColor.GREEN + "You have eaten!");
+                        } else {
+                            player.sendMessage(ChatColor.RED + "You do not have enough food!");
+                        }
+                    } else {
+                        player.sendMessage(ChatColor.RED + "Your food bar is full!");
+                    }
+                    PlayerData.setPlayersLastEvent(player);
+                }
             }
         });
     }

@@ -1,8 +1,10 @@
 package com.github.mrgeotech.zombscore.customblocks;
 
 import com.github.mrgeotech.zombscore.PlayerData;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -17,11 +19,11 @@ public class Structure {
     private Player owner;
 
     public Structure(List<Location> locations, Player player, int type) {
-        PlayerData.removeStructure(player, id);
         this.locations = locations;
         this.id = type;
         this.level = 0;
         this.owner = player;
+        PlayerData.removeStructure(player, id);
         for (int i = 0; i < locations.size(); i++) {
             locations.get(i).getBlock().setType(Material.OAK_WOOD);
         }

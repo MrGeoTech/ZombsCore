@@ -30,6 +30,14 @@ public class StructureCommand implements CommandExecutor {
         meta.setLore(lore);
         item.setItemMeta(meta);
         inventory.setItem(9, item);
+        item = new ItemStack(Material.REDSTONE_BLOCK);
+        meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.DARK_RED + "Base Heart");
+        lore.clear();
+        lore.add(ChatColor.DARK_GRAY + "You have " + ChatColor.GOLD  + "" + PlayerData.getStructuresLeft(((Player) sender), 1) + "" + ChatColor.DARK_GRAY + " left!");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        inventory.setItem(10, item);
         ((Player) sender).openInventory(inventory);
         return true;
     }

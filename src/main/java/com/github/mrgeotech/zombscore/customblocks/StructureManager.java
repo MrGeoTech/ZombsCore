@@ -4,6 +4,7 @@ import com.github.mrgeotech.zombscore.PlayerData;
 import com.github.mrgeotech.zombscore.utils.Cost;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
@@ -112,6 +113,13 @@ public class StructureManager {
         tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH).getLocation());
         tempLoc.add(origin.getBlock().getRelative(BlockFace.WEST).getLocation());
         tempLoc.add(origin.getBlock().getRelative(BlockFace.UP).getLocation());
+        for (int i = 0; i < tempLoc.size(); i++) {
+            if (!tempLoc.get(i).getBlock().getType().equals(Material.AIR)) {
+                player.sendMessage(ChatColor.RED + "This can not overlap with another structure!");
+                PlayerData.addCost(player, costMap.get("1:0"));
+                return;
+            }
+        }
         createStructure(tempLoc, player, 1);
     }
 
