@@ -9,7 +9,8 @@ public class PlayerDataStorage {
     private int food;
     private int gold;
     private long lastEvent;
-    private int wallsLeft;
+    private short wallsLeft;
+    private short baseHeartsLeft;
 
     public PlayerDataStorage() {
         wood = 0;
@@ -17,6 +18,7 @@ public class PlayerDataStorage {
         food = 0;
         lastEvent = System.currentTimeMillis();
         wallsLeft = 100;
+        baseHeartsLeft = 1;
         gold = 100000;
     }
 
@@ -48,6 +50,14 @@ public class PlayerDataStorage {
         wallsLeft--;
     }
 
+    public void addBaseHeart() {
+        baseHeartsLeft++;
+    }
+
+    public void removeBaseHeart() {
+        baseHeartsLeft--;
+    }
+
     public int getWood() {
         return wood;
     }
@@ -68,8 +78,12 @@ public class PlayerDataStorage {
         return lastEvent;
     }
 
-    public int getWallsLeft() {
+    public short getWallsLeft() {
         return wallsLeft;
+    }
+
+    public short getBaseHeartsLeft() {
+        return baseHeartsLeft;
     }
 
     public boolean canRemove(Cost cost) {

@@ -123,32 +123,48 @@ public class PlayerData {
     }
 
     public static void addStructure(Player player, int id) {
-        if (id == 0) {
+        switch (id) {
+            case 0:
                 playerData.get(player).addToWalls();
+                break;
+            case 1:
+                playerData.get(player).addBaseHeart();
+                break;
         }
     }
 
     public static boolean hasAnotherStructure(Player player, int id) {
-        if (id == 0) {
-            return playerData.get(player).getWallsLeft() > 0;
-        } else {
-            System.out.println("no");
-            return false;
+        switch (id) {
+            case 0:
+                return playerData.get(player).getWallsLeft() > 0;
+            case 1:
+                return playerData.get(player).getBaseHeartsLeft() > 0;
+            default:
+                System.out.println("no left");
+                return false;
         }
     }
 
     public static void removeStructure(Player player, int id) {
-        if (id == 0) {
-            playerData.get(player).removeFromWalls();
+        switch (id) {
+            case 0:
+                playerData.get(player).removeFromWalls();
+                break;
+            case 1:
+                playerData.get(player).removeBaseHeart();
+                break;
         }
     }
 
-    public static int getStructuresLeft(Player player, int id) {
-        if (id == 0) {
-            return playerData.get(player).getWallsLeft();
-        } else {
-            System.out.println("no left");
-            return 0;
+    public static short getStructuresLeft(Player player, int id) {
+        switch (id) {
+            case 0:
+                return playerData.get(player).getWallsLeft();
+            case 1:
+                return playerData.get(player).getBaseHeartsLeft();
+            default:
+                System.out.println("no left");
+                return 0;
         }
     }
 

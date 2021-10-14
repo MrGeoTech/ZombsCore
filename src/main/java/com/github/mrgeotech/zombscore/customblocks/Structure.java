@@ -25,6 +25,7 @@ public class Structure {
         for (int i = 0; i < locations.size(); i++) {
             locations.get(i).getBlock().setType(Material.OAK_WOOD);
         }
+
     }
 
     public int getType() {

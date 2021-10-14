@@ -85,6 +85,36 @@ public class StructureManager {
         createStructure(tempLoc, player, 0);
     }
 
+    public static void createBaseHeart(Location origin, Player player) {
+        if (!PlayerData.hasAnotherStructure(player, 1)) {
+            player.sendMessage(ChatColor.RED + "You do not have another Base Heart!");
+            return;
+        }
+        if (!PlayerData.removeCost(player, costMap.get("1:0"))) {
+            player.sendMessage(ChatColor.RED + "You do not have enough resources!");
+            return;
+        }
+        List<Location> tempLoc = new ArrayList<>();
+        origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
+        tempLoc.add(origin);
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.EAST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.WEST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH_EAST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH_WEST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_EAST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_WEST).getLocation());
+        origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
+        tempLoc.add(origin);
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.EAST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.WEST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.UP).getLocation());
+        createStructure(tempLoc, player, 1);
+    }
+
     public static boolean upgradeStructureAt(Location location, Player player) {
         for (Structure structure : structures) {
             if (structure.contains(location) && structure.isOwnedBy(player)) {
