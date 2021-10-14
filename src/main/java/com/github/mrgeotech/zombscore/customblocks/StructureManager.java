@@ -35,6 +35,17 @@ public class StructureManager {
         costMap.put("1:3", new Cost(125, 125, 5000));
         costMap.put("1:4", new Cost(200, 200, 10000));
         costMap.put("1:5", new Cost(500, 500, 50000));
+        // Gold Mine
+        costMap.put("2:0", new Cost(15, 15, 0));
+        costMap.put("2:1", new Cost(30, 30, 250));
+        costMap.put("2:2", new Cost(50, 50, 500));
+        costMap.put("2:3", new Cost(100, 100, 1000));
+        costMap.put("2:4", new Cost(200, 200, 5000));
+        costMap.put("2:5", new Cost(300, 300, 10000));
+    }
+
+    public static List<Structure> getStructures() {
+        return structures;
     }
 
     public static void createStructure(List<Location> locations, Player player, int id) {
@@ -70,6 +81,10 @@ public class StructureManager {
     }
 
     public static void createWall(Location origin, Player player) {
+        if (!PlayerData.hasAnotherStructure(player, 1)) {
+            player.sendMessage(ChatColor.RED + "You must place a Base Heart to place other structures!");
+            return;
+        }
         if (!PlayerData.hasAnotherStructure(player, 0)) {
             player.sendMessage(ChatColor.RED + "You do not have any more walls!");
             return;
@@ -121,6 +136,42 @@ public class StructureManager {
             }
         }
         createStructure(tempLoc, player, 1);
+    }
+
+    public static void createGoldMine(Location origin, Player player) {
+        if (!PlayerData.hasAnotherStructure(player, 1)) {
+            player.sendMessage(ChatColor.RED + "You must place a Base Heart to place other structures!");
+            return;
+        }
+        if (!PlayerData.hasAnotherStructure(player, 0)) {
+            player.sendMessage(ChatColor.RED + "You do not have any more gold mines!");
+            return;
+        }
+        if (!PlayerData.removeCost(player, costMap.get("2:0"))) {
+            player.sendMessage(ChatColor.RED + "You do not have enough resources!");
+            return;
+        }
+        List<Location> tempLoc = new ArrayList<>();
+        origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
+        tempLoc.add(origin);
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.EAST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.WEST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH_EAST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH_WEST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_EAST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_WEST).getLocation());
+        origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.EAST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.WEST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH_EAST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH_WEST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_EAST).getLocation());
+        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_WEST).getLocation());
+        createStructure(tempLoc, player, 2);
     }
 
     public static boolean upgradeStructureAt(Location location, Player player) {

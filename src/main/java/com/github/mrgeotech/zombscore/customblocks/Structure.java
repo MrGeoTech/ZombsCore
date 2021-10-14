@@ -1,6 +1,8 @@
 package com.github.mrgeotech.zombscore.customblocks;
 
 import com.github.mrgeotech.zombscore.PlayerData;
+import com.github.mrgeotech.zombscore.ZombsCore;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,7 +29,13 @@ public class Structure {
         for (int i = 0; i < locations.size(); i++) {
             locations.get(i).getBlock().setType(Material.OAK_WOOD);
         }
-
+        if (type == 2) {
+            Bukkit.getScheduler().runTaskTimer(ZombsCore.getInstance(), () -> {
+                if (StructureManager.getStructures().contains(this)) {
+                    PlayerData.addGold(owner, 10 * (level + 1));
+                }
+            }, 0, 20);
+        }
     }
 
     public int getType() {
