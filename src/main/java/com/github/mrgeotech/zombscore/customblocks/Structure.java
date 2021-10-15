@@ -28,11 +28,8 @@ public class Structure {
             locations.get(i).getBlock().setType(Material.OAK_WOOD);
         }
         if (type == 2) {
-            Bukkit.getScheduler().runTaskTimer(ZombsCore.getInstance(), () -> {
-                if (StructureManager.getStructures().contains(this)) {
-                    PlayerData.addGold(owner, 10 * (level + 1));
-                }
-            }, 0, 20);
+            GoldMiner gm = new GoldMiner(this);
+            gm.setId(Bukkit.getScheduler().runTaskTimer(ZombsCore.getInstance(), gm, 0, 20).getTaskId());
         }
     }
 
