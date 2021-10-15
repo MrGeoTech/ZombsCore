@@ -26,7 +26,7 @@ public class StructureCommand implements CommandExecutor {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.WHITE + "Wall");
         List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.DARK_GRAY + "You have " + ChatColor.GOLD  + "" + PlayerData.getStructuresLeft(((Player) sender), 0) + "" + ChatColor.DARK_GRAY + " left!");
+        lore.add(ChatColor.DARK_GRAY + "You have " + ChatColor.GOLD  + "" + PlayerData.getStructuresLeft(((Player) sender), (short) 0) + "" + ChatColor.DARK_GRAY + " left!");
         meta.setLore(lore);
         item.setItemMeta(meta);
         inventory.setItem(9, item);
@@ -34,7 +34,7 @@ public class StructureCommand implements CommandExecutor {
         meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.DARK_RED + "Base Heart");
         lore.clear();
-        lore.add(ChatColor.DARK_GRAY + "You have " + ChatColor.GOLD  + "" + PlayerData.getStructuresLeft(((Player) sender), 1) + "" + ChatColor.DARK_GRAY + " left!");
+        lore.add(ChatColor.DARK_GRAY + "You have " + ChatColor.GOLD  + "" + PlayerData.getStructuresLeft(((Player) sender), (short) 1) + "" + ChatColor.DARK_GRAY + " left!");
         meta.setLore(lore);
         item.setItemMeta(meta);
         inventory.setItem(10, item);

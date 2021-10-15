@@ -2,6 +2,9 @@ package com.github.mrgeotech.zombscore;
 
 import com.github.mrgeotech.zombscore.utils.Cost;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PlayerDataStorage {
 
     private int wood;
@@ -9,16 +12,17 @@ public class PlayerDataStorage {
     private int food;
     private int gold;
     private long lastEvent;
-    private short wallsLeft;
-    private short baseHeartsLeft;
+    private Map<Short, Short> structuresLeft;
 
     public PlayerDataStorage() {
         wood = 0;
         stone = 0;
         food = 0;
         lastEvent = System.currentTimeMillis();
-        wallsLeft = 100;
-        baseHeartsLeft = 1;
+        structuresLeft = new HashMap<>();
+        structuresLeft.put((short) 0, (short) 100);
+        structuresLeft.put((short) 1, (short) 1);
+        structuresLeft.put((short) 2, (short) 8);
         gold = 100000;
     }
 
@@ -42,20 +46,16 @@ public class PlayerDataStorage {
         lastEvent = System.currentTimeMillis();
     }
 
-    public void addToWalls() {
-        wallsLeft++;
+    public void addStructure(short type) {
+        structuresLeft.put(type, (short) (structuresLeft.get(type) + 1));
     }
 
-    public void removeFromWalls() {
-        wallsLeft--;
+    public void removeStructure(short type) {
+        structuresLeft.put(type, (short) (structuresLeft.get(type) - 1));
     }
 
-    public void addBaseHeart() {
-        baseHeartsLeft++;
-    }
-
-    public void removeBaseHeart() {
-        baseHeartsLeft--;
+    public short getStructuresLeft(short type) {
+        return structuresLeft.get(type);
     }
 
     public int getWood() {
@@ -76,14 +76,6 @@ public class PlayerDataStorage {
 
     public long getLastEvent() {
         return lastEvent;
-    }
-
-    public short getWallsLeft() {
-        return wallsLeft;
-    }
-
-    public short getBaseHeartsLeft() {
-        return baseHeartsLeft;
     }
 
     public boolean canRemove(Cost cost) {

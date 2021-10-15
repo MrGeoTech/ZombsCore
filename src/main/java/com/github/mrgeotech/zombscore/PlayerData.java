@@ -122,50 +122,20 @@ public class PlayerData {
         return playerData.get(player).getLastEvent();
     }
 
-    public static void addStructure(Player player, int id) {
-        switch (id) {
-            case 0:
-                playerData.get(player).addToWalls();
-                break;
-            case 1:
-                playerData.get(player).addBaseHeart();
-                break;
-        }
+    public static void addStructure(Player player, short id) {
+        playerData.get(player).removeStructure(id);
     }
 
-    public static boolean hasAnotherStructure(Player player, int id) {
-        switch (id) {
-            case 0:
-                return playerData.get(player).getWallsLeft() > 0;
-            case 1:
-                return playerData.get(player).getBaseHeartsLeft() > 0;
-            default:
-                System.out.println("no left");
-                return false;
-        }
+    public static boolean hasAnotherStructure(Player player, short id) {
+        return playerData.get(player).getStructuresLeft(id) <= 0;
     }
 
-    public static void removeStructure(Player player, int id) {
-        switch (id) {
-            case 0:
-                playerData.get(player).removeFromWalls();
-                break;
-            case 1:
-                playerData.get(player).removeBaseHeart();
-                break;
-        }
+    public static void removeStructure(Player player, short id) {
+        playerData.get(player).removeStructure(id);
     }
 
-    public static short getStructuresLeft(Player player, int id) {
-        switch (id) {
-            case 0:
-                return playerData.get(player).getWallsLeft();
-            case 1:
-                return playerData.get(player).getBaseHeartsLeft();
-            default:
-                System.out.println("no left");
-                return 0;
-        }
+    public static short getStructuresLeft(Player player, short id) {
+        return playerData.get(player).getStructuresLeft(id);
     }
 
     public static void addCost(Player player, Cost cost) {

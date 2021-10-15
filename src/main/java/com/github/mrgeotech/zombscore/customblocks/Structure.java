@@ -3,10 +3,8 @@ package com.github.mrgeotech.zombscore.customblocks;
 import com.github.mrgeotech.zombscore.PlayerData;
 import com.github.mrgeotech.zombscore.ZombsCore;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -16,11 +14,11 @@ public class Structure {
 
     private List<Location> locations;
     private Entity entity;
-    private int id;
-    private int level;
+    private short id;
+    private short level;
     private Player owner;
 
-    public Structure(List<Location> locations, Player player, int type) {
+    public Structure(List<Location> locations, Player player, short type) {
         this.locations = locations;
         this.id = type;
         this.level = 0;
@@ -38,11 +36,11 @@ public class Structure {
         }
     }
 
-    public int getType() {
+    public short getType() {
         return id;
     }
 
-    public int getLevel() {
+    public short getLevel() {
         return level;
     }
 

@@ -21,7 +21,7 @@ public class PlayerDataCommand implements CommandExecutor {
                 "&6- Stone: " + PlayerData.getStone(player) + "\n" +
                 "&6- Food: " + PlayerData.getFood(player) + "\n" +
                 "&6- Gold: " + PlayerData.getGold(player) + "\n" +
-                "&6- Walls Left: " + PlayerData.getStructuresLeft(player, 0)));
+                "&6- Walls Left: " + PlayerData.getStructuresLeft(player, (short) 0)));
         return true;
     }
 

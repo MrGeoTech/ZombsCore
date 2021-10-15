@@ -48,7 +48,7 @@ public class StructureManager {
         return structures;
     }
 
-    public static void createStructure(List<Location> locations, Player player, int id) {
+    public static void createStructure(List<Location> locations, Player player, short id) {
         structures.add(new Structure(locations, player, id));
     }
 
@@ -81,11 +81,11 @@ public class StructureManager {
     }
 
     public static void createWall(Location origin, Player player) {
-        if (!PlayerData.hasAnotherStructure(player, 1)) {
+        if (PlayerData.hasAnotherStructure(player, (short) 1)) {
             player.sendMessage(ChatColor.RED + "You must place a Base Heart to place other structures!");
             return;
         }
-        if (!PlayerData.hasAnotherStructure(player, 0)) {
+        if (PlayerData.hasAnotherStructure(player, (short) 0)) {
             player.sendMessage(ChatColor.RED + "You do not have any more walls!");
             return;
         }
@@ -98,11 +98,11 @@ public class StructureManager {
         tempLoc.add(origin);
         origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
         tempLoc.add(origin);
-        createStructure(tempLoc, player, 0);
+        createStructure(tempLoc, player, (short) 0);
     }
 
     public static void createBaseHeart(Location origin, Player player) {
-        if (!PlayerData.hasAnotherStructure(player, 1)) {
+        if (PlayerData.hasAnotherStructure(player, (short) 1)) {
             player.sendMessage(ChatColor.RED + "You do not have another Base Heart!");
             return;
         }
@@ -135,15 +135,15 @@ public class StructureManager {
                 return;
             }
         }
-        createStructure(tempLoc, player, 1);
+        createStructure(tempLoc, player, (short) 1);
     }
 
     public static void createGoldMine(Location origin, Player player) {
-        if (!PlayerData.hasAnotherStructure(player, 1)) {
+        if (PlayerData.hasAnotherStructure(player, (short) 1)) {
             player.sendMessage(ChatColor.RED + "You must place a Base Heart to place other structures!");
             return;
         }
-        if (!PlayerData.hasAnotherStructure(player, 0)) {
+        if (PlayerData.hasAnotherStructure(player, (short) 0)) {
             player.sendMessage(ChatColor.RED + "You do not have any more gold mines!");
             return;
         }
@@ -171,7 +171,7 @@ public class StructureManager {
         tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH_WEST).getLocation());
         tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_EAST).getLocation());
         tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_WEST).getLocation());
-        createStructure(tempLoc, player, 2);
+        createStructure(tempLoc, player, (short) 2);
     }
 
     public static boolean upgradeStructureAt(Location location, Player player) {
