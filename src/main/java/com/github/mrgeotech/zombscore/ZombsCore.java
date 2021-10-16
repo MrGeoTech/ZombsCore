@@ -150,11 +150,8 @@ public final class ZombsCore extends JavaPlugin implements Listener {
             } else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 event.setCancelled(true);
                 if (event.hasItem()) {
-                    System.out.println(1);
                     if (event.getItem().getType().equals(Material.STONE)) {
-                        System.out.println(2);
                         if (event.getClickedBlock().getType().equals(Material.GRASS_BLOCK)) {
-                            System.out.println(3);
                             StructureManager.createWall(event.getClickedBlock().getLocation(), event.getPlayer());
                             if (!event.getPlayer().isSneaking())
                                 event.getPlayer().getInventory().setItem(3, basicInventory.get(3));
@@ -163,10 +160,17 @@ public final class ZombsCore extends JavaPlugin implements Listener {
                         }
                         return;
                     } else if (event.getItem().getType().equals(Material.REDSTONE_BLOCK)) {
-                        System.out.println(4);
                         if (event.getClickedBlock().getType().equals(Material.GRASS_BLOCK)) {
-                            System.out.println(5);
                             StructureManager.createBaseHeart(event.getClickedBlock().getLocation(), event.getPlayer());
+                            if (!event.getPlayer().isSneaking())
+                                event.getPlayer().getInventory().setItem(3, basicInventory.get(3));
+                        } else {
+                            event.getPlayer().sendMessage(ChatColor.RED + "You must place structures on the ground");
+                        }
+                        return;
+                    } else if (event.getItem().getType().equals(Material.GOLD_BLOCK)) {
+                        if (event.getClickedBlock().getType().equals(Material.GRASS_BLOCK)) {
+                            StructureManager.createGoldMine(event.getClickedBlock().getLocation(), event.getPlayer());
                             if (!event.getPlayer().isSneaking())
                                 event.getPlayer().getInventory().setItem(3, basicInventory.get(3));
                         } else {

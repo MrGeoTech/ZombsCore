@@ -127,7 +127,7 @@ public class PlayerData {
     }
 
     public static boolean hasAnotherStructure(Player player, short id) {
-        return playerData.get(player).getStructuresLeft(id) <= 0;
+        return playerData.get(player).getStructuresLeft(id) < 0;
     }
 
     public static void removeStructure(Player player, short id) {

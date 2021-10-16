@@ -207,4 +207,8 @@ public class StructureManager {
         return false;
     }
 
+    public static Cost getBaseCost(short type) {
+        return costMap.get(type + ":0");
+    }
+
 }

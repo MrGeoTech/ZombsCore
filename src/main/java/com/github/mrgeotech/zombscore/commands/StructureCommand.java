@@ -2,6 +2,7 @@ package com.github.mrgeotech.zombscore.commands;
 
 import com.github.mrgeotech.zombscore.PlayerData;
 import com.github.mrgeotech.zombscore.Utils;
+import com.github.mrgeotech.zombscore.customblocks.StructureManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -27,6 +28,7 @@ public class StructureCommand implements CommandExecutor {
         meta.setDisplayName(ChatColor.WHITE + "Wall");
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.DARK_GRAY + "You have " + ChatColor.GOLD  + "" + PlayerData.getStructuresLeft(((Player) sender), (short) 0) + "" + ChatColor.DARK_GRAY + " left!");
+        lore.add(ChatColor.DARK_GRAY + "Wood:" + StructureManager.getBaseCost((short) 0).getWood() + " Stone:" + StructureManager.getBaseCost((short) 0).getStone() + " Gold:" + StructureManager.getBaseCost((short) 0).getGold());
         meta.setLore(lore);
         item.setItemMeta(meta);
         inventory.setItem(9, item);
@@ -35,9 +37,19 @@ public class StructureCommand implements CommandExecutor {
         meta.setDisplayName(ChatColor.DARK_RED + "Base Heart");
         lore.clear();
         lore.add(ChatColor.DARK_GRAY + "You have " + ChatColor.GOLD  + "" + PlayerData.getStructuresLeft(((Player) sender), (short) 1) + "" + ChatColor.DARK_GRAY + " left!");
+        lore.add(ChatColor.DARK_GRAY + "Wood:" + StructureManager.getBaseCost((short) 1).getWood() + " Stone:" + StructureManager.getBaseCost((short) 1).getStone() + " Gold:" + StructureManager.getBaseCost((short) 1).getGold());
         meta.setLore(lore);
         item.setItemMeta(meta);
         inventory.setItem(10, item);
+        item = new ItemStack(Material.GOLD_BLOCK);
+        meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.GOLD + "Gold Mine");
+        lore.clear();
+        lore.add(ChatColor.DARK_GRAY + "You have " + ChatColor.GOLD  + "" + PlayerData.getStructuresLeft(((Player) sender), (short) 2) + "" + ChatColor.DARK_GRAY + " left!");
+        lore.add(ChatColor.DARK_GRAY + "Wood:" + StructureManager.getBaseCost((short) 2).getWood() + " Stone:" + StructureManager.getBaseCost((short) 2).getStone() + " Gold:" + StructureManager.getBaseCost((short) 2).getGold());
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        inventory.setItem(11, item);
         ((Player) sender).openInventory(inventory);
         return true;
     }
