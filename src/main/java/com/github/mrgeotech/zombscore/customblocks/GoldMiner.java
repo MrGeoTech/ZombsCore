@@ -18,6 +18,7 @@ public class GoldMiner implements Runnable {
 
     @Override
     public void run() {
+        System.out.println(1);
         if (StructureManager.getStructures().contains(this)) {
             PlayerData.addGold(structure.getOwner(), 10 * (structure.getLevel() + 1));
         } else {

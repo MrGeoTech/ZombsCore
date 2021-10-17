@@ -15,9 +15,9 @@ public class PlayerDataStorage {
     private Map<Short, Short> structuresLeft;
 
     public PlayerDataStorage() {
-        wood = 0;
-        stone = 0;
-        food = 0;
+        wood = 100;
+        stone = 100;
+        food = 100;
         lastEvent = System.currentTimeMillis();
         structuresLeft = new HashMap<>();
         structuresLeft.put((short) 0, (short) 100);
