@@ -123,7 +123,7 @@ public class PlayerData {
     }
 
     public static void addStructure(Player player, short id) {
-        playerData.get(player).removeStructure(id);
+        playerData.get(player).addStructure(id);
     }
 
     public static boolean hasAnotherStructure(Player player, short id) {

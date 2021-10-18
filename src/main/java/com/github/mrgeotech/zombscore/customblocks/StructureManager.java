@@ -143,7 +143,7 @@ public class StructureManager {
             player.sendMessage(ChatColor.RED + "You must place a Base Heart to place other structures!");
             return;
         }
-        if (PlayerData.hasAnotherStructure(player, (short) 0)) {
+        if (PlayerData.hasAnotherStructure(player, (short) 2)) {
             player.sendMessage(ChatColor.RED + "You do not have any more gold mines!");
             return;
         }
@@ -171,6 +171,13 @@ public class StructureManager {
         tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH_WEST).getLocation());
         tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_EAST).getLocation());
         tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_WEST).getLocation());
+        for (int i = 0; i < tempLoc.size(); i++) {
+            if (!tempLoc.get(i).getBlock().getType().equals(Material.AIR)) {
+                player.sendMessage(ChatColor.RED + "This can not overlap with another structure!");
+                PlayerData.addCost(player, costMap.get("2:0"));
+                return;
+            }
+        }
         createStructure(tempLoc, player, (short) 2);
     }
 

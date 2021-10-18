@@ -1,6 +1,7 @@
 package com.github.mrgeotech.zombscore.customblocks;
 
 import com.github.mrgeotech.zombscore.PlayerData;
+import com.github.mrgeotech.zombscore.scoreboard.ScoreboardBuilder;
 import org.bukkit.Bukkit;
 
 public class GoldMiner implements Runnable {
@@ -18,9 +19,9 @@ public class GoldMiner implements Runnable {
 
     @Override
     public void run() {
-        System.out.println(1);
-        if (StructureManager.getStructures().contains(this)) {
+        if (StructureManager.getStructures().contains(structure)) {
             PlayerData.addGold(structure.getOwner(), 10 * (structure.getLevel() + 1));
+            ScoreboardBuilder.updateScoreboard(structure.getOwner());
         } else {
             Bukkit.getScheduler().cancelTask(id);
         }
