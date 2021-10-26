@@ -17,12 +17,14 @@ public class Structure {
     private short id;
     private short level;
     private Player owner;
+    private short health;
 
     public Structure(List<Location> locations, Player player, short type) {
         this.locations = locations;
         this.id = type;
         this.level = 0;
         this.owner = player;
+        this.health = 100;
         PlayerData.removeStructure(player, id);
         for (int i = 0; i < locations.size(); i++) {
             locations.get(i).getBlock().setType(Material.OAK_WOOD);
@@ -41,8 +43,17 @@ public class Structure {
         return level;
     }
 
+    public void setEntity(Entity entity) {
+        this.entity = entity;
+    }
+
+    public Entity getEntity() {
+        return entity;
+    }
+
     public void upgrade() {
         level++;
+        health *= 2;
         if (level == 1) {
             for (int i = 0; i < locations.size(); i++) {
                 locations.get(i).getBlock().setType(Material.STONE);
