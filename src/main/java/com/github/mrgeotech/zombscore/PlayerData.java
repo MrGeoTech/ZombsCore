@@ -1,7 +1,7 @@
 package com.github.mrgeotech.zombscore;
 
 import com.github.mrgeotech.zombscore.utils.Cost;
-import com.github.mrgeotech.zombscore.customblocks.StructureManager;
+import com.github.mrgeotech.zombscore.structures.StructureManager;
 import com.github.mrgeotech.zombscore.scoreboard.ScoreboardBuilder;
 import org.bukkit.entity.Player;
 

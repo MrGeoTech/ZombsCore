@@ -1,4 +1,4 @@
-package com.github.mrgeotech.zombscore.customblocks;
+package com.github.mrgeotech.zombscore.structures;
 
 import com.github.mrgeotech.zombscore.PlayerData;
 import com.github.mrgeotech.zombscore.utils.Cost;

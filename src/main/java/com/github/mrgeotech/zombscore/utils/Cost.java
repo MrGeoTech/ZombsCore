@@ -24,6 +24,12 @@ public class Cost {
         return gold;
     }
 
+    public void setCost(int wood, int stone, int gold) {
+        this.wood = wood;
+        this.stone = stone;
+        this.gold = gold;
+    }
+
     public Cost toSellPrice() {
         return new Cost((int)(wood * .75), (int)(stone * .75), (int)(gold * .75));
     }

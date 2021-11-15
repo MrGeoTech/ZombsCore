@@ -3,7 +3,7 @@ package com.github.mrgeotech.zombscore;
 import com.github.mrgeotech.zombscore.commands.PlayerDataCommand;
 import com.github.mrgeotech.zombscore.commands.StructureCommand;
 import com.github.mrgeotech.zombscore.commands.UpgradeCommand;
-import com.github.mrgeotech.zombscore.customblocks.StructureManager;
+import com.github.mrgeotech.zombscore.structures.StructureManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
