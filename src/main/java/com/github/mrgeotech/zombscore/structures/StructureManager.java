@@ -42,6 +42,13 @@ public class StructureManager {
         costMap.put("2:3", new Cost(100, 100, 1000));
         costMap.put("2:4", new Cost(200, 200, 5000));
         costMap.put("2:5", new Cost(300, 300, 10000));
+        // Archer Tower
+        costMap.put("3:0", new Cost(5, 5, 0));
+        costMap.put("3:1", new Cost(15, 15, 25));
+        costMap.put("3:2", new Cost(25, 25, 50));
+        costMap.put("3:3", new Cost(50, 50, 100));
+        costMap.put("3:4", new Cost(100, 100, 500));
+        costMap.put("3:5", new Cost(200, 200, 1000));
     }
 
     public static List<Structure> getStructures() {
@@ -179,6 +186,23 @@ public class StructureManager {
             }
         }
         createStructure(tempLoc, player, (short) 2);
+    }
+
+    public static void createArcherTower(Location origin, Player player) {
+        if (PlayerData.hasAnotherStructure(player, (short) 1)) {
+            player.sendMessage(ChatColor.RED + "You must place a Base Heart to place other structures!");
+            return;
+        }
+        if (PlayerData.hasAnotherStructure(player, (short) 3)) {
+            player.sendMessage(ChatColor.RED + "You do not have any more archer towers!");
+            return;
+        }
+        if (!PlayerData.removeCost(player, costMap.get("3:0"))) {
+            player.sendMessage(ChatColor.RED + "You do not have enough resources!");
+            return;
+        }
+        List<Location> tempLoc = new ArrayList<>();
+        origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
     }
 
     public static boolean upgradeStructureAt(Location location, Player player) {
