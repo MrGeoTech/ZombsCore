@@ -1,15 +1,14 @@
 package com.github.mrgeotech.zombscore.structures.structures;
 
-import com.github.mrgeotech.zombscore.PlayerData;
 import com.github.mrgeotech.zombscore.structures.StructureType;
 import com.github.mrgeotech.zombscore.utils.Cost;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Skeleton;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -42,6 +41,29 @@ public class ArcherTower extends Structure {
                 20,
                 20).getTaskId();
         Block origin = location.getBlock().getRelative(BlockFace.UP);
+        origin.getRelative(BlockFace.NORTH_EAST).setType(Material.OAK_WOOD);
+        origin.getRelative(BlockFace.NORTH_WEST).setType(Material.OAK_WOOD);
+        origin.getRelative(BlockFace.SOUTH_EAST).setType(Material.OAK_WOOD);
+        origin.getRelative(BlockFace.SOUTH_WEST).setType(Material.OAK_WOOD);
+        origin.getRelative(BlockFace.NORTH).setType(Material.GRAY_STAINED_GLASS);
+        origin.getRelative(BlockFace.EAST).setType(Material.GRAY_STAINED_GLASS);
+        origin.getRelative(BlockFace.SOUTH).setType(Material.GRAY_STAINED_GLASS);
+        origin.getRelative(BlockFace.WEST).setType(Material.GRAY_STAINED_GLASS);
+        origin = location.getBlock().getRelative(BlockFace.UP);
+        origin.setType(Material.OAK_SLAB);
+        origin.getRelative(BlockFace.NORTH_EAST).setType(Material.OAK_WOOD);
+        origin.getRelative(BlockFace.NORTH_WEST).setType(Material.OAK_WOOD);
+        origin.getRelative(BlockFace.SOUTH_EAST).setType(Material.OAK_WOOD);
+        origin.getRelative(BlockFace.SOUTH_WEST).setType(Material.OAK_WOOD);
+        origin.getRelative(BlockFace.NORTH).setType(Material.LIGHT_GRAY_STAINED_GLASS);
+        origin.getRelative(BlockFace.EAST).setType(Material.LIGHT_GRAY_STAINED_GLASS);
+        origin.getRelative(BlockFace.SOUTH).setType(Material.LIGHT_GRAY_STAINED_GLASS);
+        origin.getRelative(BlockFace.WEST).setType(Material.LIGHT_GRAY_STAINED_GLASS);
+        origin = location.getBlock().getRelative(BlockFace.UP);
+        origin.getRelative(BlockFace.NORTH_EAST).setType(Material.OAK_SLAB);
+        origin.getRelative(BlockFace.NORTH_WEST).setType(Material.OAK_SLAB);
+        origin.getRelative(BlockFace.SOUTH_EAST).setType(Material.OAK_SLAB);
+        origin.getRelative(BlockFace.SOUTH_WEST).setType(Material.OAK_SLAB);
     }
 
     @Override
