@@ -234,44 +234,49 @@ public class UpgradeCommand implements CommandExecutor, Listener {
                 PlayerInventory inventory = player.getInventory();
                 String next;
                 // The slots that have things that do stuff when clicked
-                switch (event.getSlot()) {
-                    case 10:
-                        // Upgrading the axe
-                        next = inventory.getItem(1).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
-                        if (!next.equalsIgnoreCase("none")) {
-                            if (PlayerData.removeCost(player, axeUpgrades.get(next).getCost()))
-                                inventory.setItem(1, axeUpgrades.get(next).getItem());
-                            else
-                                player.sendMessage(ChatColor.RED + "You do not have enough resources!");
-                        } else
-                            player.sendMessage(ChatColor.RED + "You already have the best axe!");
-                        break;
-                    case 12:
-                        // Upgrading the pickaxe
-                        next = inventory.getItem(2).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
-                        if (!next.equalsIgnoreCase("none")) {
-                            if (PlayerData.removeCost(player, pickaxeUpgrades.get(next).getCost()))
-                                inventory.setItem(2, pickaxeUpgrades.get(next).getItem());
-                            else
-                                player.sendMessage(ChatColor.RED + "You do not have enough resources!");
-                        } else
-                            player.sendMessage(ChatColor.RED + "You already have the best pickaxe!");
-                        break;
-                    case 14:
-                        // Upgrading the sword
-                        next = inventory.getItem(0).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
-                        if (!next.equalsIgnoreCase("none")) {
-                            if (PlayerData.removeCost(player, swordUpgrades.get(next).getCost()))
-                                inventory.setItem(0, swordUpgrades.get(next).getItem());
-                            else
-                                player.sendMessage(ChatColor.RED + "You do not have enough resources!");
-                        } else
-                            player.sendMessage(ChatColor.RED + "You already have the best sword!");
-                        break;
-                    case 16:
-                        // Upgrading/getting pets
-                        player.sendMessage("Coming soon");
-                        break;
+                try {
+                    switch (event.getSlot()) {
+                        case 10:
+                            // Upgrading the axe
+                            next = inventory.getItem(1).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
+                            if (!next.equalsIgnoreCase("none")) {
+                                if (PlayerData.removeCost(player.getUniqueId(), axeUpgrades.get(next).getCost()))
+                                    inventory.setItem(1, axeUpgrades.get(next).getItem());
+                                else
+                                    player.sendMessage(ChatColor.RED + "You do not have enough resources!");
+                            } else
+                                player.sendMessage(ChatColor.RED + "You already have the best axe!");
+                            break;
+                        case 12:
+                            // Upgrading the pickaxe
+                            next = inventory.getItem(2).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
+                            if (!next.equalsIgnoreCase("none")) {
+                                if (PlayerData.removeCost(player.getUniqueId(), pickaxeUpgrades.get(next).getCost()))
+                                    inventory.setItem(2, pickaxeUpgrades.get(next).getItem());
+                                else
+                                    player.sendMessage(ChatColor.RED + "You do not have enough resources!");
+                            } else
+                                player.sendMessage(ChatColor.RED + "You already have the best pickaxe!");
+                            break;
+                        case 14:
+                            // Upgrading the sword
+                            next = inventory.getItem(0).getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "next-upgrade"), PersistentDataType.STRING);
+                            if (!next.equalsIgnoreCase("none")) {
+                                if (PlayerData.removeCost(player.getUniqueId(), swordUpgrades.get(next).getCost()))
+                                    inventory.setItem(0, swordUpgrades.get(next).getItem());
+                                else
+                                    player.sendMessage(ChatColor.RED + "You do not have enough resources!");
+                            } else
+                                player.sendMessage(ChatColor.RED + "You already have the best sword!");
+                            break;
+                        case 16:
+                            // Upgrading/getting pets
+                            player.sendMessage("Coming soon");
+                            break;
+                    }
+                } catch (NullPointerException e) {
+                    Bukkit.getLogger().severe("An error occurred while trying to upgrade tools!");
+                    e.printStackTrace();
                 }
             } else if (event.getView().getTitle().equalsIgnoreCase("Structures")) {
                 if (!event.getCurrentItem().getType().equals(Material.GRAY_STAINED_GLASS_PANE) && !(event.getClickedInventory() instanceof PlayerInventory)) {
@@ -282,11 +287,11 @@ public class UpgradeCommand implements CommandExecutor, Listener {
                 ((Player) event.getWhoClicked()).performCommand("/upgrades");
             } else if (event.getCurrentItem().getType().equals(Material.SWEET_BERRIES)) {
                 // If it is the sweet berries in the players' inventory
-                if (PlayerData.getPlayersLastEvent((Player) event.getWhoClicked()) < System.currentTimeMillis() - 250) {
+                if (PlayerData.getPlayersLastEvent(event.getWhoClicked().getUniqueId()) < System.currentTimeMillis() - 250) {
                     Player player = (Player) event.getWhoClicked();
                     if (player.getFoodLevel() < 20) {
-                        if (PlayerData.getFood(player) > 0) {
-                            PlayerData.removeFood(player);
+                        if (PlayerData.getFood(player.getUniqueId()) > 0) {
+                            PlayerData.removeFood(player.getUniqueId());
                             player.setFoodLevel(player.getFoodLevel() + 1);
                             player.sendMessage(ChatColor.GREEN + "You have eaten!");
                         } else {
@@ -295,7 +300,7 @@ public class UpgradeCommand implements CommandExecutor, Listener {
                     } else {
                         player.sendMessage(ChatColor.RED + "Your food bar is full!");
                     }
-                    PlayerData.setPlayersLastEvent(player);
+                    PlayerData.setPlayersLastEvent(player.getUniqueId());
                 }
             }
         });

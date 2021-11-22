@@ -1,5 +1,6 @@
 package com.github.mrgeotech.zombscore;
 
+import com.github.mrgeotech.zombscore.structures.StructureType;
 import com.github.mrgeotech.zombscore.utils.Cost;
 
 import java.util.HashMap;
@@ -12,7 +13,7 @@ public class PlayerDataStorage {
     private int food;
     private int gold;
     private long lastEvent;
-    private Map<Short, Short> structuresLeft;
+    private Map<StructureType, Short> structuresLeft;
 
     public PlayerDataStorage() {
         wood = 100;
@@ -20,9 +21,9 @@ public class PlayerDataStorage {
         food = 100;
         lastEvent = System.currentTimeMillis();
         structuresLeft = new HashMap<>();
-        structuresLeft.put((short) 0, (short) 100);
-        structuresLeft.put((short) 1, (short) 1);
-        structuresLeft.put((short) 2, (short) 8);
+        structuresLeft.put(StructureType.BASE_HEART, (short) 1);
+        structuresLeft.put(StructureType.GOLD_MINE, (short) 8);
+        structuresLeft.put(StructureType.ARCHER_TOWER, (short) 6);
         gold = 100000;
     }
 
@@ -46,15 +47,15 @@ public class PlayerDataStorage {
         lastEvent = System.currentTimeMillis();
     }
 
-    public void addStructure(short type) {
+    public void addStructure(StructureType type) {
         structuresLeft.put(type, (short) (structuresLeft.get(type) + 1));
     }
 
-    public void removeStructure(short type) {
+    public void removeStructure(StructureType type) {
         structuresLeft.put(type, (short) (structuresLeft.get(type) - 1));
     }
 
-    public short getStructuresLeft(short type) {
+    public short getStructuresLeft(StructureType type) {
         return structuresLeft.get(type);
     }
 

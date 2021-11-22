@@ -17,11 +17,10 @@ public class PlayerDataCommand implements CommandExecutor {
         if (args.length != 1) return Utils.sendAndQuit(sender, ChatColor.RED + "You must specify a player!");
         Player player = Bukkit.getPlayer(args[0]);
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6---Player Data for " + player.getDisplayName() + "&6---\n" +
-                "&6- Wood: " + PlayerData.getWood(player) + "\n" +
-                "&6- Stone: " + PlayerData.getStone(player) + "\n" +
-                "&6- Food: " + PlayerData.getFood(player) + "\n" +
-                "&6- Gold: " + PlayerData.getGold(player) + "\n" +
-                "&6- Walls Left: " + PlayerData.getStructuresLeft(player, (short) 0)));
+                "&6- Wood: " + PlayerData.getWood(player.getUniqueId()) + "\n" +
+                "&6- Stone: " + PlayerData.getStone(player.getUniqueId()) + "\n" +
+                "&6- Food: " + PlayerData.getFood(player.getUniqueId()) + "\n" +
+                "&6- Gold: " + PlayerData.getGold(player.getUniqueId()) + "\n"));
         return true;
     }
 

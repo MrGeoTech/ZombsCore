@@ -10,8 +10,24 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utils {
+
+    private static final Pattern hexPattern = Pattern.compile("&#([A-Fa-f0-9]){6}");
+
+    public static String color(String message){
+        Matcher matcher = hexPattern.matcher(message);
+        while (matcher.find()) {
+            final net.md_5.bungee.api.ChatColor hexColor = net.md_5.bungee.api.ChatColor.of(matcher.group().substring(1, matcher.group().length()));
+            final String before = message.substring(0, matcher.start());
+            final String after = message.substring(matcher.end());
+            message = before + hexColor + after;
+            matcher = hexPattern.matcher(message);
+        }
+        return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', message);
+    }
 
     public static Inventory createGlassInventory(int size, String name) {
         // Creating the inventory for the player

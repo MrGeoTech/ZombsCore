@@ -1,65 +1,46 @@
 package com.github.mrgeotech.zombscore.structures;
 
 import com.github.mrgeotech.zombscore.PlayerData;
+import com.github.mrgeotech.zombscore.structures.structures.ArcherTower;
+import com.github.mrgeotech.zombscore.structures.structures.BaseHeart;
+import com.github.mrgeotech.zombscore.structures.structures.GoldMine;
+import com.github.mrgeotech.zombscore.structures.structures.Structure;
 import com.github.mrgeotech.zombscore.utils.Cost;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 public class StructureManager {
 
     private static List<Structure> structures;
-    private static Map<String, Cost> costMap;
 
     public static void init() {
         structures = new ArrayList<>();
-        costMap = new HashMap<>();
-        // Walls
-        costMap.put("0:0", new Cost(2, 2, 0));
-        costMap.put("0:1", new Cost(4, 4, 5));
-        costMap.put("0:2", new Cost(0, 0, 20));
-        costMap.put("0:3", new Cost(10, 10, 50));
-        costMap.put("0:4", new Cost(15, 15, 100));
-        costMap.put("0:5", new Cost(20, 20, 200));
-        // Base heart
-        costMap.put("1:0", new Cost(25, 25, 0));
-        costMap.put("1:1", new Cost(50, 50, 500));
-        costMap.put("1:2", new Cost(75, 75, 1000));
-        costMap.put("1:3", new Cost(125, 125, 5000));
-        costMap.put("1:4", new Cost(200, 200, 10000));
-        costMap.put("1:5", new Cost(500, 500, 50000));
-        // Gold Mine
-        costMap.put("2:0", new Cost(15, 15, 0));
-        costMap.put("2:1", new Cost(30, 30, 250));
-        costMap.put("2:2", new Cost(50, 50, 500));
-        costMap.put("2:3", new Cost(100, 100, 1000));
-        costMap.put("2:4", new Cost(200, 200, 5000));
-        costMap.put("2:5", new Cost(300, 300, 10000));
-        // Archer Tower
-        costMap.put("3:0", new Cost(5, 5, 0));
-        costMap.put("3:1", new Cost(15, 15, 25));
-        costMap.put("3:2", new Cost(25, 25, 50));
-        costMap.put("3:3", new Cost(50, 50, 100));
-        costMap.put("3:4", new Cost(100, 100, 500));
-        costMap.put("3:5", new Cost(200, 200, 1000));
     }
 
     public static List<Structure> getStructures() {
         return structures;
     }
 
-    public static void createStructure(List<Location> locations, Player player, short id) {
-        structures.add(new Structure(locations, player, id));
+    public static void createStructure(StructureType type, Location location, UUID owner) {
+        switch (type) {
+            case BASE_HEART:
+                structures.add(new BaseHeart(location, owner));
+                break;
+            case GOLD_MINE:
+                structures.add(new GoldMine(location, owner));
+                break;
+            case ARCHER_TOWER:
+                structures.add(new ArcherTower(location, owner));
+                break;
+        }
     }
 
-    public static boolean clickingAtStructure(Location location, Player player) {
+    public static boolean clickingAtStructure(Location location, UUID player) {
         for (Structure structure : structures) {
             if (structure.contains(location) && structure.isOwnedBy(player)) {
                 return true;
@@ -70,153 +51,38 @@ public class StructureManager {
 
     public static boolean deleteStructure(Location location) {
         for (Structure structure : structures) {
-            if (structure.deleteIfContains(location)) return true;
+            if (structure.contains(location)) {
+                structure.delete();
+                return true;
+            }
         }
         return false;
     }
 
     public static void deleteAllStructures() {
         for (Structure structure : structures) {
-            structure.deleteStructure();
+            structure.delete();
         }
     }
 
-    public static void deleteAllStructures(Player player) {
+    public static void deleteAllStructures(UUID player) {
         for (Structure structure : structures) {
-            structure.deleteIfOwnedBy(player);
+            if (structure.isOwnedBy(player))
+                structure.delete();
         }
-    }
-
-    public static void createWall(Location origin, Player player) {
-        if (PlayerData.hasAnotherStructure(player, (short) 1)) {
-            player.sendMessage(ChatColor.RED + "You must place a Base Heart to place other structures!");
-            return;
-        }
-        if (PlayerData.hasAnotherStructure(player, (short) 0)) {
-            player.sendMessage(ChatColor.RED + "You do not have any more walls!");
-            return;
-        }
-        if (!PlayerData.removeCost(player, costMap.get("0:0"))) {
-            player.sendMessage(ChatColor.RED + "You do not have enough resources!");
-            return;
-        }
-        List<Location> tempLoc = new ArrayList<>();
-        origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
-        tempLoc.add(origin);
-        origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
-        tempLoc.add(origin);
-        createStructure(tempLoc, player, (short) 0);
-    }
-
-    public static void createBaseHeart(Location origin, Player player) {
-        if (PlayerData.hasAnotherStructure(player, (short) 1)) {
-            player.sendMessage(ChatColor.RED + "You do not have another Base Heart!");
-            return;
-        }
-        if (!PlayerData.removeCost(player, costMap.get("1:0"))) {
-            player.sendMessage(ChatColor.RED + "You do not have enough resources!");
-            return;
-        }
-        List<Location> tempLoc = new ArrayList<>();
-        origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
-        tempLoc.add(origin);
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.EAST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.WEST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH_EAST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH_WEST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_EAST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_WEST).getLocation());
-        origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
-        tempLoc.add(origin);
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.EAST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.WEST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.UP).getLocation());
-        for (int i = 0; i < tempLoc.size(); i++) {
-            if (!tempLoc.get(i).getBlock().getType().equals(Material.AIR)) {
-                player.sendMessage(ChatColor.RED + "This can not overlap with another structure!");
-                PlayerData.addCost(player, costMap.get("1:0"));
-                return;
-            }
-        }
-        createStructure(tempLoc, player, (short) 1);
-    }
-
-    public static void createGoldMine(Location origin, Player player) {
-        if (PlayerData.hasAnotherStructure(player, (short) 1)) {
-            player.sendMessage(ChatColor.RED + "You must place a Base Heart to place other structures!");
-            return;
-        }
-        if (PlayerData.hasAnotherStructure(player, (short) 2)) {
-            player.sendMessage(ChatColor.RED + "You do not have any more gold mines!");
-            return;
-        }
-        if (!PlayerData.removeCost(player, costMap.get("2:0"))) {
-            player.sendMessage(ChatColor.RED + "You do not have enough resources!");
-            return;
-        }
-        List<Location> tempLoc = new ArrayList<>();
-        origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
-        tempLoc.add(origin);
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.EAST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.WEST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH_EAST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH_WEST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_EAST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_WEST).getLocation());
-        origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.EAST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.WEST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH_EAST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.NORTH_WEST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_EAST).getLocation());
-        tempLoc.add(origin.getBlock().getRelative(BlockFace.SOUTH_WEST).getLocation());
-        for (int i = 0; i < tempLoc.size(); i++) {
-            if (!tempLoc.get(i).getBlock().getType().equals(Material.AIR)) {
-                player.sendMessage(ChatColor.RED + "This can not overlap with another structure!");
-                PlayerData.addCost(player, costMap.get("2:0"));
-                return;
-            }
-        }
-        createStructure(tempLoc, player, (short) 2);
-    }
-
-    public static void createArcherTower(Location origin, Player player) {
-        if (PlayerData.hasAnotherStructure(player, (short) 1)) {
-            player.sendMessage(ChatColor.RED + "You must place a Base Heart to place other structures!");
-            return;
-        }
-        if (PlayerData.hasAnotherStructure(player, (short) 3)) {
-            player.sendMessage(ChatColor.RED + "You do not have any more archer towers!");
-            return;
-        }
-        if (!PlayerData.removeCost(player, costMap.get("3:0"))) {
-            player.sendMessage(ChatColor.RED + "You do not have enough resources!");
-            return;
-        }
-        List<Location> tempLoc = new ArrayList<>();
-        origin = origin.getBlock().getRelative(BlockFace.UP).getLocation();
     }
 
     public static boolean upgradeStructureAt(Location location, Player player) {
         for (Structure structure : structures) {
-            if (structure.contains(location) && structure.isOwnedBy(player)) {
-                try {
-                    Cost cost = costMap.get(structure.getType() + ":" + (structure.getLevel() + 1));
-                    if (PlayerData.removeCost(player, cost)) {
+            if (structure.contains(location) && structure.isOwnedBy(player.getUniqueId())) {
+                if (structure.getLevel() == 7) {
+                    if (PlayerData.removeCost(player.getUniqueId(), structure.getCost())) {
                         structure.upgrade();
                     } else {
                         player.sendMessage(ChatColor.RED + "You do not have enough resources!");
                     }
                     return true;
-                } catch (NullPointerException e) {
+                } else {
                     player.sendMessage(ChatColor.RED + "You have upgraded this structure to the max level!");
                     return true;
                 }
@@ -225,12 +91,12 @@ public class StructureManager {
         return false;
     }
 
-    public static boolean sellStructureAt(Location location, Player owner) {
+    public static boolean sellStructureAt(Location location, UUID owner) {
         for (int i = 0; i < structures.size(); i++) {
             if (structures.get(i).contains(location) && structures.get(i).isOwnedBy(owner)) {
                 Structure temp = structures.get(i);
-                PlayerData.addCost(temp.getOwner(), costMap.get(temp.getType() + ":" + temp.getLevel()).toSellPrice());
-                temp.deleteStructure();
+                PlayerData.addCost(temp.getOwner(), temp.getCost().toSellPrice());
+                temp.delete();
                 structures.remove(i);
                 return true;
             }
@@ -238,8 +104,17 @@ public class StructureManager {
         return false;
     }
 
-    public static Cost getBaseCost(short type) {
-        return costMap.get(type + ":0");
+    public static Cost getBaseCost(StructureType type) {
+        switch (type) {
+            case BASE_HEART:
+                return new Cost(25, 25, 0);
+            case GOLD_MINE:
+                return new Cost(15, 15, 0);
+            case ARCHER_TOWER:
+                return new Cost(20, 20, 0);
+            default:
+                return new Cost(0, 0, 0);
+        }
     }
 
 }

@@ -1,18 +1,17 @@
 package com.github.mrgeotech.zombscore.scoreboard;
 
 import com.github.mrgeotech.zombscore.PlayerData;
-import com.github.mrgeotech.zombscore.ZombsCore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
-import org.w3c.dom.css.Counter;
+
+import java.util.UUID;
 
 public class ScoreboardBuilder {
 
-    public static void setScoreboard(Player player) {
+    public static void setScoreboard(UUID player) {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        Objective objective = scoreboard.registerNewObjective(player.getName(), "dummy", "Zombs Stats");
+        Objective objective = scoreboard.registerNewObjective(Bukkit.getPlayer(player).getName(), "dummy", "Zombs Stats");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         Score spacer = objective.getScore("                ");
@@ -50,11 +49,11 @@ public class ScoreboardBuilder {
         spacer = objective.getScore(ChatColor.DARK_BLUE + "                ");
         spacer.setScore(0);
 
-        player.setScoreboard(scoreboard);
+        Bukkit.getPlayer(player).setScoreboard(scoreboard);
     }
 
-    public static void updateScoreboard(Player player) {
-        Scoreboard scoreboard = player.getScoreboard();
+    public static void updateScoreboard(UUID player) {
+        Scoreboard scoreboard = Bukkit.getPlayer(player).getScoreboard();
 
         scoreboard.getTeam("woodCounter").setPrefix(ChatColor.GOLD + "Wood   | " + PlayerData.getWood(player));
         scoreboard.getTeam("stoneCounter").setPrefix(ChatColor.GOLD + "Stone  | " + PlayerData.getStone(player));

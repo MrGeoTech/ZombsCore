@@ -13,7 +13,7 @@ import java.util.UUID;
 public class BaseHeart extends Structure {
 
     public BaseHeart(Location location, UUID owner) {
-        super(location, owner, null, (short) 1, new Cost(25, 25, 0));
+        super(location, owner, null, (short) 1, new Cost(25, 25, 0), (short) 50);
         Block origin = location.getBlock().getRelative(BlockFace.UP);
         origin.setType(Material.OAK_WOOD);
         origin.getRelative(BlockFace.NORTH).setType(Material.OAK_WOOD);
@@ -166,17 +166,9 @@ public class BaseHeart extends Structure {
                 origin.getRelative(BlockFace.NORTH_WEST).setType(Material.WAXED_OXIDIZED_CUT_COPPER_SLAB);
                 this.cost.setCost(1000, 1000, 100000);
                 break;
-        }
-    }
-
-    @Override
-    public void delete() {
-        for (int x = this.location.getBlockX() - size; x <= this.location.getBlockX() + size; x++) {
-            for (int y = this.location.getBlockX() + 1; y <= this.location.getBlockX() + 4; y++) {
-                for (int z = this.location.getBlockX() - size; z <= this.location.getBlockX() + size; z++) {
-                    Objects.requireNonNull(location.getWorld()).getBlockAt(x, y, x).setType(Material.AIR);
-                }
-            }
+            default:
+                level--;
+                break;
         }
     }
 

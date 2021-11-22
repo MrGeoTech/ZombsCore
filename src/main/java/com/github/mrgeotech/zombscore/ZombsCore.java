@@ -4,6 +4,7 @@ import com.github.mrgeotech.zombscore.commands.PlayerDataCommand;
 import com.github.mrgeotech.zombscore.commands.StructureCommand;
 import com.github.mrgeotech.zombscore.commands.UpgradeCommand;
 import com.github.mrgeotech.zombscore.structures.StructureManager;
+import com.github.mrgeotech.zombscore.structures.StructureType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -109,7 +110,7 @@ public final class ZombsCore extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         // Adding player to player data
-        if (!PlayerData.containsPlayer(player)) PlayerData.addPlayer(player);
+        if (!PlayerData.containsPlayer(player.getUniqueId())) PlayerData.addPlayer(player.getUniqueId());
         player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 2));
         // Setting up player inventory
         player.getInventory().clear();
@@ -138,10 +139,10 @@ public final class ZombsCore extends JavaPlugin implements Listener {
             // If the player broke a block
             if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
                 // If the player is trying to remove a structure that is at a location, it will return true
-                if (PlayerData.getPlayersLastEvent(event.getPlayer()) < System.currentTimeMillis() - 250) {
-                    if (StructureManager.sellStructureAt(block.getLocation(), event.getPlayer())) {
+                if (PlayerData.getPlayersLastEvent(event.getPlayer().getUniqueId()) < System.currentTimeMillis() - 250) {
+                    if (StructureManager.sellStructureAt(block.getLocation(), event.getPlayer().getUniqueId())) {
                         event.setCancelled(true);
-                        PlayerData.setPlayersLastEvent(event.getPlayer());
+                        PlayerData.setPlayersLastEvent(event.getPlayer().getUniqueId());
                     }
                 }
                 // Always return on a left block click so that it doesn't get processed later
@@ -152,7 +153,9 @@ public final class ZombsCore extends JavaPlugin implements Listener {
                 if (event.hasItem()) {
                     if (event.getItem().getType().equals(Material.STONE)) {
                         if (event.getClickedBlock().getType().equals(Material.GRASS_BLOCK)) {
-                            StructureManager.createWall(event.getClickedBlock().getLocation(), event.getPlayer());
+                            StructureManager.createStructure(StructureType.ARCHER_TOWER,
+                                    event.getClickedBlock().getLocation(),
+                                    event.getPlayer().getUniqueId());
                             if (!event.getPlayer().isSneaking())
                                 event.getPlayer().getInventory().setItem(3, basicInventory.get(3));
                         } else {
@@ -161,7 +164,7 @@ public final class ZombsCore extends JavaPlugin implements Listener {
                         return;
                     } else if (event.getItem().getType().equals(Material.REDSTONE_BLOCK)) {
                         if (event.getClickedBlock().getType().equals(Material.GRASS_BLOCK)) {
-                            StructureManager.createBaseHeart(event.getClickedBlock().getLocation(), event.getPlayer());
+                            StructureManager.createStructure(StructureType.BASE_HEART, event.getClickedBlock().getLocation(), event.getPlayer().getUniqueId());
                             if (!event.getPlayer().isSneaking())
                                 event.getPlayer().getInventory().setItem(3, basicInventory.get(3));
                         } else {
@@ -170,7 +173,7 @@ public final class ZombsCore extends JavaPlugin implements Listener {
                         return;
                     } else if (event.getItem().getType().equals(Material.GOLD_BLOCK)) {
                         if (event.getClickedBlock().getType().equals(Material.GRASS_BLOCK)) {
-                            StructureManager.createGoldMine(event.getClickedBlock().getLocation(), event.getPlayer());
+                            StructureManager.createStructure(StructureType.GOLD_MINE, event.getClickedBlock().getLocation(), event.getPlayer().getUniqueId());
                             if (!event.getPlayer().isSneaking())
                                 event.getPlayer().getInventory().setItem(3, basicInventory.get(3));
                         } else {
@@ -181,7 +184,7 @@ public final class ZombsCore extends JavaPlugin implements Listener {
                 }
                 Material mat = block.getType();
                 Player player = event.getPlayer();
-                if (PlayerData.getPlayersLastEvent(player) < System.currentTimeMillis() - 250) {
+                if (PlayerData.getPlayersLastEvent(player.getUniqueId()) < System.currentTimeMillis() - 250) {
                     // If it is a type that could be a structure
                     if ((mat.equals(Material.OAK_WOOD) ||
                             mat.equals(Material.STONE) ||
@@ -192,7 +195,7 @@ public final class ZombsCore extends JavaPlugin implements Listener {
                             mat.equals(Material.REDSTONE_BLOCK))) {
                         if (player.isSneaking()) {
                             if (StructureManager.upgradeStructureAt(block.getLocation(), player)) {
-                                PlayerData.setPlayersLastEvent(player);
+                                PlayerData.setPlayersLastEvent(player.getUniqueId());
                                 return;
                             }
                         }
@@ -205,11 +208,11 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         if (!event.hasItem() || event.getAction().equals(Action.LEFT_CLICK_AIR)) return;
         ItemStack item = event.getItem();
         if (item.getType().equals(Material.SWEET_BERRIES)) {
-            if (PlayerData.getPlayersLastEvent(event.getPlayer()) < System.currentTimeMillis() - 250) {
+            if (PlayerData.getPlayersLastEvent(event.getPlayer().getUniqueId()) < System.currentTimeMillis() - 250) {
                 Player player = event.getPlayer();
                 if (player.getFoodLevel() < 20) {
-                    if (PlayerData.getFood(player) > 0) {
-                        PlayerData.removeFood(player);
+                    if (PlayerData.getFood(player.getUniqueId()) > 0) {
+                        PlayerData.removeFood(player.getUniqueId());
                         player.setFoodLevel(player.getFoodLevel() + 1);
                         player.sendMessage(ChatColor.GREEN + "You have eaten!");
                     } else {
@@ -218,7 +221,7 @@ public final class ZombsCore extends JavaPlugin implements Listener {
                 } else {
                     player.sendMessage(ChatColor.RED + "Your food bar is full!");
                 }
-                PlayerData.setPlayersLastEvent(player);
+                PlayerData.setPlayersLastEvent(player.getUniqueId());
             }
         } else if (item.getType().equals(Material.NETHER_STAR)) {
             event.getPlayer().performCommand("upgrades");
@@ -249,9 +252,9 @@ public final class ZombsCore extends JavaPlugin implements Listener {
                 interupted = true;
             }
             if (isRunning && !interupted) {
-                PlayerData.removePlayer(player);
+                PlayerData.removePlayer(player.getUniqueId());
             } else if (!isRunning) {
-                PlayerData.removePlayer(player);
+                PlayerData.removePlayer(player.getUniqueId());
             }
         });
     }
@@ -263,13 +266,13 @@ public final class ZombsCore extends JavaPlugin implements Listener {
         Block block = event.getBlock();
         // Adding the data to players' data
         if (block.getType().equals(Material.OAK_LOG)) {
-            PlayerData.addWood(event.getPlayer());
+            PlayerData.addWood(event.getPlayer().getUniqueId());
         } else if (block.getType().equals(Material.STONE)) {
-            PlayerData.addStone(event.getPlayer());
+            PlayerData.addStone(event.getPlayer().getUniqueId());
         } else if (block.getType().equals(Material.SWEET_BERRY_BUSH)) {
-            if (PlayerData.getPlayersLastEvent(event.getPlayer()) < System.currentTimeMillis() - 250) {
-                PlayerData.addFood(event.getPlayer());
-                PlayerData.setPlayersLastEvent(event.getPlayer());
+            if (PlayerData.getPlayersLastEvent(event.getPlayer().getUniqueId()) < System.currentTimeMillis() - 250) {
+                PlayerData.addFood(event.getPlayer().getUniqueId());
+                PlayerData.setPlayersLastEvent(event.getPlayer().getUniqueId());
             }
         }
     }
