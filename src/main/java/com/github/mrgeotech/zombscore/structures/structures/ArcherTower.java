@@ -41,6 +41,7 @@ public class ArcherTower extends Structure {
                 20,
                 20).getTaskId();
         Block origin = location.getBlock().getRelative(BlockFace.UP);
+        origin.setType(Material.OAK_WOOD);
         origin.getRelative(BlockFace.NORTH_EAST).setType(Material.OAK_WOOD);
         origin.getRelative(BlockFace.NORTH_WEST).setType(Material.OAK_WOOD);
         origin.getRelative(BlockFace.SOUTH_EAST).setType(Material.OAK_WOOD);
@@ -73,7 +74,28 @@ public class ArcherTower extends Structure {
 
     @Override
     public void upgrade() {
-
+        this.level++;
+        Block origin = location.getBlock().getRelative(BlockFace.UP);
+        switch (level) {
+            case 1:
+                origin.getRelative(BlockFace.NORTH_EAST).setType(Material.OAK_WOOD);
+                origin.getRelative(BlockFace.NORTH_WEST).setType(Material.OAK_WOOD);
+                origin.getRelative(BlockFace.SOUTH_EAST).setType(Material.OAK_WOOD);
+                origin.getRelative(BlockFace.SOUTH_WEST).setType(Material.OAK_WOOD);
+                origin = location.getBlock().getRelative(BlockFace.UP);
+                origin.setType(Material.OAK_SLAB);
+                origin.getRelative(BlockFace.NORTH_EAST).setType(Material.OAK_WOOD);
+                origin.getRelative(BlockFace.NORTH_WEST).setType(Material.OAK_WOOD);
+                origin.getRelative(BlockFace.SOUTH_EAST).setType(Material.OAK_WOOD);
+                origin.getRelative(BlockFace.SOUTH_WEST).setType(Material.OAK_WOOD);
+                origin = location.getBlock().getRelative(BlockFace.UP);
+                origin.getRelative(BlockFace.NORTH_EAST).setType(Material.OAK_SLAB);
+                origin.getRelative(BlockFace.NORTH_WEST).setType(Material.OAK_SLAB);
+                origin.getRelative(BlockFace.SOUTH_EAST).setType(Material.OAK_SLAB);
+                origin.getRelative(BlockFace.SOUTH_WEST).setType(Material.OAK_SLAB);
+                cost = new Cost(30, 30, 100);
+                break;
+        }
     }
 
     @Override
